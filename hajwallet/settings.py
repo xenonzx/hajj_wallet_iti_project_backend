@@ -81,26 +81,14 @@ WSGI_APPLICATION = 'hajwallet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.mysql',
-#         'OPTIONS': {
-#             'read_default_file': '/home/nada/iti_projects/final_project/hajwallet/env.cnf',
-#         },
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
-        'NAME': 'hajwallet',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306'
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, 'env.cnf'),
+        },
     }
 }
-
 
 
 # Password validation
