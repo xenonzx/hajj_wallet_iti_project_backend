@@ -42,9 +42,6 @@ INSTALLED_APPS = [
     'pilgrims',
     'vendors',
     'payments',
-    'django_adminlte',
-    'django_adminlte_theme',
-    'django.contrib.admin',
 ]
 
 MIDDLEWARE = [
