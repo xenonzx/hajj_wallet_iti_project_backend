@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'pilgrims',
     'vendors',
     'payments',
+    'django_adminlte',
+    'django_adminlte_theme',
+    'django.contrib.admin',
 ]
 
 MIDDLEWARE = [
