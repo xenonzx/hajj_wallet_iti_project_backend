@@ -1,8 +1,8 @@
 from django.contrib import admin
+from custom_admin.admin import admin_site
 from pilgrims.models import Pilgrims
 from payments.models import Transaction
 
-@admin.register(Pilgrims)
 class PilgrimAdmin(admin.ModelAdmin):
 
     list_per_page = 10
@@ -91,5 +91,5 @@ class PilgrimAdmin(admin.ModelAdmin):
         return
     show_pilgrim_transactions.short_description = 'transaction'
 
-
+admin_site.register(Pilgrims, PilgrimAdmin)
 
