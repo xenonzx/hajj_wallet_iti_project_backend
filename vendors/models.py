@@ -18,5 +18,32 @@ class Vendor(models.Model):
     # user = models.OneToOneField(User)
 
     def __str__(self):
-        return self.crn
+        return self.account.username
+
+    def __str__(self):
+        return self.account.username
+
+    def view_vendor_name(self):
+        return self.account.first_name + " " + self.account.last_name
+
+    view_vendor_name.shortDescription = "Vendor Name"
+
+    def view_vendor_nationality(self):
+        return self.account.nationality
+
+    def view_vendor_email(self):
+        return self.account.email
+
+    def view_vendor_image(self):
+        return self.account.image
+
+    def view_vendor_username(self):
+        return self.account.username
+
+    def view_vendor_phone_number(self):
+        return self.account.phone_number
+
+    def view_vendor_category(self):
+        return self.category.name
+
 
