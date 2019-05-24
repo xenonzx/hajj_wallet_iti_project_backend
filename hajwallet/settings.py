@@ -112,12 +112,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
 
-        'NAME': 'hajwallet',
-        'USER': 'root',
-        'PASSWORD': 'Mohamed12345!',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, 'env.cnf'),
+        },
     }
 }
 
