@@ -7,6 +7,8 @@ from .serializers import NameRegistrationSerializer,PilgrimSerializer
 from pilgrims.models import Pilgrims
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
+
 
 class NameRegistrationView(RegisterView):
   serializer_class = NameRegistrationSerializer
@@ -46,3 +48,6 @@ class PilgrimDetailView(generics.RetrieveUpdateAPIView):
         return Response({"error": serializer.errors, "error": True})
     serializer = PilgrimSerializer(pilgrim)
     return Response(serializer.data)
+
+class TransactionsView(APIView):
+  pass
