@@ -60,7 +60,7 @@ class PilgrimSerializer(serializers.ModelSerializer):
 
     return pilgrim
 
-  class TransactionsSerializer(serializers.ModelSerializer):
+class TransactionsSerializer(serializers.ModelSerializer):
     vendor_username= serializers.SerializerMethodField('get_vendor_username')
     vendor_phone=serializers.SerializerMethodField('get_vendor_phone')
 

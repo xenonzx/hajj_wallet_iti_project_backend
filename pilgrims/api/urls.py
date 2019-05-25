@@ -7,7 +7,7 @@ from .views import TransactionsView
 urlpatterns = [
     path('registration/pilgrims_register', NameRegistrationView.as_view(), name="rest_name_register"),
     path('<int:id>', PilgrimDetailView.as_view()),
-    path('transactions', TransactionsView)
+    path('transactions', TransactionsView.as_view())
 ]
 
 
