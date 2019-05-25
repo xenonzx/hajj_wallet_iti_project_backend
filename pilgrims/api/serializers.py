@@ -7,7 +7,7 @@ from accounts.models import Nationality,Account
 from rest_framework.validators import UniqueValidator
 from rest_auth.serializers import UserDetailsSerializer
 from rest_framework.authtoken.models import Token
-
+from payments.models import Transaction
 
 class NameRegistrationSerializer(RegisterSerializer):
 
@@ -59,3 +59,17 @@ class PilgrimSerializer(serializers.ModelSerializer):
     pilgrim.account.save()
 
     return pilgrim
+
+  class TransactionsSerializer(serializers.ModelSerializer):
+    vendor_username= serializers.SerializerMethodField('get_vendor_username')
+    vendor_phone=serializers.SerializerMethodField('get_vendor_phone')
+
+    class Meta:
+      model = Transaction
+      fields=['money_paid','time_stamp','vendor_username','vendor_phone']
+
+    def get_vendor_username(self,obj):
+      return obj.vendor_id.username
+
+    def get_vendor_phone(self,obj):
+      return obj.vendor_id.phone_number
