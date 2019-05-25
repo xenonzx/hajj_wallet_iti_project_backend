@@ -52,6 +52,7 @@ class PilgrimDetailView(generics.RetrieveUpdateAPIView):
     return Response(serializer.data)
 
 class TransactionsView(APIView):
+  permission_classes = (IsAuthenticated,)
 
   def get(self, request, format=None):
     transactions = Transaction.objects.all()
