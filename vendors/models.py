@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 from accounts.models import Account
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name=models.CharField(max_length=50)
@@ -14,6 +15,7 @@ class Vendor(models.Model):
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
     location = models.PointField()
     code=models.CharField(max_length=250)
+    # user = models.OneToOneField(User)
 
     def __str__(self):
         return self.account.username

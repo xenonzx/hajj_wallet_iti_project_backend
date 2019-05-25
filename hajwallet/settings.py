@@ -45,7 +45,34 @@ INSTALLED_APPS = [
     'django_adminlte',
     'django_adminlte_theme',
     'django.contrib.admin',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
 ]
+SITE_ID = 1
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# ACCOUNT_EMAIL_VERIFICATION = 'none'
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = 'b709a983278255'
+EMAIL_HOST_PASSWORD = 'a6993de88f2a66'
+EMAIL_PORT = '2525'
+DEFAULT_FROM_EMAIL = 'My Site <noreply@mysite.com>'
+
+REST_AUTH_SERIALIZERS = {
+    # 'USER_DETAILS_SERIALIZER': 'vendors.api.serializers.customUserDetailsSerializer',
+     'TOKEN_SERIALIZER': 'vendors.api.serializers.TokenSerializer' # import path to CustomTokenSerializer defined above.
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   )
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,6 +111,7 @@ WSGI_APPLICATION = 'hajwallet.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
+
         'OPTIONS': {
             'read_default_file': os.path.join(BASE_DIR, 'env.cnf'),
         },
