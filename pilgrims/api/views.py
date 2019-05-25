@@ -55,8 +55,8 @@ class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)
 
   def get(self, request, format=None):
-    transactions = Transaction.objects.all()
+    transactions = Transaction.objects.select_related('vendor').filter(pilgrim_id=request.user.id)
     if len(transactions)>0:
-      serializer = TransactionsSerializer(transactions, many=True)
+      serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
       return Response(serializer.data)
     raise NotFound(detail="pilgrim with no transactions",code=404)

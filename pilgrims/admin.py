@@ -92,7 +92,7 @@ class PilgrimAdmin(admin.ModelAdmin):
         pilgrim_transactions=Transaction.objects.select_related('vendor').filter(pilgrim_id=obj.account.id)
         if len(pilgrim_transactions) is 0:
             return None
-        return "\n".join(["Received " + str(t.money_paid) + " from " + str(t.pilgrim.username) for t in pilgrim_transactions])
+        return "\n".join(["Received " + str(t.money_paid) + " from " + str(t.vendor.username) for t in pilgrim_transactions])
 
     show_pilgrim_transactions.short_description = 'transaction'
 

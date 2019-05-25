@@ -61,15 +61,24 @@ class PilgrimSerializer(serializers.ModelSerializer):
     return pilgrim
 
 class TransactionsSerializer(serializers.ModelSerializer):
-    vendor_username= serializers.SerializerMethodField('get_vendor_username')
-    vendor_phone=serializers.SerializerMethodField('get_vendor_phone')
+
+    vendor_username= serializers.SerializerMethodField(read_only=True)
+    vendor_phone= serializers.SerializerMethodField(read_only=True)
+    vendor_id = serializers.SerializerMethodField()
 
     class Meta:
       model = Transaction
-      fields=['money_paid','time_stamp','vendor_username','vendor_phone']
+      fields=['money_paid','time_stamp','vendor_username','vendor_phone','vendor_id']
 
     def get_vendor_username(self,obj):
-      return obj.vendor_id.username
+      return obj.vendor.username
 
     def get_vendor_phone(self,obj):
-      return obj.vendor_id.phone_number
+      return obj.vendor.phone_number
+
+    def get_vendor_id(self,obj):
+      return obj.vendor.id
+
+
+
+
