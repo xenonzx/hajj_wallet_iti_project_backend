@@ -21,7 +21,7 @@ from rest_auth.views import PasswordResetConfirmView,PasswordResetView
 from custom_admin.admin import admin_site
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     path('rest_auth/', include('rest_auth.urls')),
     path('rest_auth/registration/', include('rest_auth.registration.urls')),
     path('pilgrims/', include('pilgrims.api.urls')),
