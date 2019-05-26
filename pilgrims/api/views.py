@@ -3,10 +3,14 @@ from accounts.models import Account
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_auth.registration.views import RegisterView
-from .serializers import NameRegistrationSerializer,PilgrimSerializer
+from .serializers import NameRegistrationSerializer,PilgrimSerializer , TransactionsSerializer
 from pilgrims.models import Pilgrims
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
+from payments.models import Transaction
+from rest_framework.exceptions import NotFound
+
 
 class NameRegistrationView(RegisterView):
   serializer_class = NameRegistrationSerializer
@@ -46,3 +50,13 @@ class PilgrimDetailView(generics.RetrieveUpdateAPIView):
         return Response({"error": serializer.errors, "error": True})
     serializer = PilgrimSerializer(pilgrim)
     return Response(serializer.data)
+
+class TransactionsView(APIView):
+  permission_classes = (IsAuthenticated,)
+
+  def get(self, request, format=None):
+    transactions = Transaction.objects.select_related('vendor').filter(pilgrim_id=request.user.id)
+    if len(transactions)>0:
+      serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
+      return Response(serializer.data)
+    raise NotFound(detail="pilgrim with no transactions",code=404)

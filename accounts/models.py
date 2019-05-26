@@ -10,6 +10,9 @@ def update_filename(instance, filename):
 class Nationality(models.Model):
     name=models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 class Account(AbstractUser):
     GENDER = (
         ('F', 'Female'),

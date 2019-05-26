@@ -6,8 +6,11 @@ from payments.models import Transaction
 class PilgrimAdmin(admin.ModelAdmin):
 
     list_per_page = 10
+
+
     list_display = (
         'show_pilgrim_name',
+        'show_pilgrim_username',
         'show_pilgrim_email',
         'show_pilgrim_nationality',
         )
@@ -56,8 +59,9 @@ class PilgrimAdmin(admin.ModelAdmin):
 
     ### customize list display
 
-    def show_pilgrim_name(self,obj):
-        return obj.account.first_name+" "+obj.account.last_name
+    def show_pilgrim_name(self, obj):
+        return obj.account.first_name + " " + obj.account.last_name
+
     show_pilgrim_name.short_description = 'Name'
 
     def show_pilgrim_email(self,obj):
@@ -65,7 +69,7 @@ class PilgrimAdmin(admin.ModelAdmin):
     show_pilgrim_email.short_description = 'Email'
 
     def show_pilgrim_nationality(self,obj):
-        return obj.account.nationality.name
+        return obj.account.nationality
     show_pilgrim_nationality.short_description = 'Nationality'
 
     def edit_pilgrim_is_active(self,obj):
@@ -85,11 +89,20 @@ class PilgrimAdmin(admin.ModelAdmin):
     show_pilgrim_username.short_description = 'Username'
 
     def show_pilgrim_transactions(self,obj):
-        temp=Transaction.objects.filter(pilgrim_id=obj.account)
-        if len(temp) is 0:
+        pilgrim_transactions=Transaction.objects.select_related('vendor').filter(pilgrim_id=obj.account.id)
+        if len(pilgrim_transactions) is 0:
             return None
-        return
+        return "\n".join(["Received " + str(t.money_paid) + " from " + str(t.vendor.username) for t in pilgrim_transactions])
+
     show_pilgrim_transactions.short_description = 'transaction'
+
+    # def change_view(self, request, object_id, form_url='', extra_context=None):
+    #     p=Pilgrims.objects.get(id=int(object_id))
+    #     print(p.pilgrim_account_id.all()) ### reverse relation
+    #     print(object_id)
+    #     return None
+
+
 
 admin_site.register(Pilgrims, PilgrimAdmin)
 

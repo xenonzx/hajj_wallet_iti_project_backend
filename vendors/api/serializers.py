@@ -7,7 +7,7 @@ from accounts.models import Nationality,Account
 from rest_framework.validators import UniqueValidator
 # from rest_auth.serializers import UserDetailsSerializer
 from vendors.models import Category
-
+from payments.models import Transaction
 
 class customUserDetailsSerializer(serializers.ModelSerializer):
 
@@ -89,5 +89,21 @@ class VendorSerializer(serializers.ModelSerializer):
     fields=('username','email' ,'first_name', 'last_name','gender','type' ,'phone_number', 'crn',
             'code','category_id','image','location')
 
+class TransactionsSerializer(serializers.ModelSerializer):
+    pilgrim_username = serializers.SerializerMethodField(read_only=True)
+    pilgrim_phone = serializers.SerializerMethodField(read_only=True)
+    pilgrim_id = serializers.SerializerMethodField()
 
+    class Meta:
+      model = Transaction
+      fields = ['money_paid', 'time_stamp', 'pilgrim_username', 'pilgrim_phone', 'pilgrim_id']
+
+    def get_pilgrim_username(self, obj):
+      return obj.pilgrim.username
+
+    def get_pilgrim_phone(self, obj):
+      return obj.pilgrim.phone_number
+
+    def get_pilgrim_id(self, obj):
+      return obj.pilgrim.id
 

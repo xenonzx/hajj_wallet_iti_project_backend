@@ -2,12 +2,15 @@ from rest_framework import generics,status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_auth.registration.views import RegisterView
-from .serializers import NameRegistrationSerializer,VendorSerializer
+from .serializers import NameRegistrationSerializer, TransactionsSerializer
 from pilgrims.models import Pilgrims
 from rest_framework.response import Response
 from vendors.models import Vendor
 from accounts.models import Account
 from rest_auth.views import LoginView
+from rest_framework.views import APIView
+from payments.models import Transaction
+from rest_framework.exceptions import NotFound
 
 class NameRegistrationView(RegisterView):
   queryset = Vendor.objects.all()
@@ -40,3 +43,13 @@ class CustomLoginView(LoginView):
         orginal_response.data.update(mydata)
 
         return orginal_response
+
+class TransactionsView(APIView):
+  permission_classes = (IsAuthenticated,)
+
+  def get(self, request, format=None):
+    transactions = Transaction.objects.select_related('pilgrim').filter(vendor_id=request.user.id)
+    if len(transactions)>0:
+      serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
+      return Response(serializer.data)
+    raise NotFound(detail=" Vendor with no transactions",code=404)
