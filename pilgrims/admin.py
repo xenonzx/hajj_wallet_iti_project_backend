@@ -2,6 +2,7 @@ from django.contrib import admin
 from custom_admin.admin import admin_site
 from pilgrims.models import Pilgrims
 from payments.models import Transaction
+from accounts.models import Nationality
 
 class PilgrimAdmin(admin.ModelAdmin):
 
@@ -31,7 +32,6 @@ class PilgrimAdmin(admin.ModelAdmin):
         'show_pilgrim_nationality',
         'show_pilgrim_phone_number',
         'show_pilgrim_transactions',
-
     )
     fieldsets = (
                     ("Personal info",
@@ -63,7 +63,7 @@ class PilgrimAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
     def has_change_permission(self, request, obj=None):
-        return True
+        return False
     def has_view_permission(self, request, obj=None):
         return True
 
@@ -106,13 +106,27 @@ class PilgrimAdmin(admin.ModelAdmin):
 
     show_pilgrim_transactions.short_description = 'transaction'
 
-    # def change_view(self, request, object_id, form_url='', extra_context=None):
-    #     pass
-    #     p=Pilgrims.objects.get(id=int(object_id))
-    #     print(p.pilgrim_account_id.all()) ### reverse relation
-    #     print(object_id)
-    #     return None
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        pilgrim_profile=Pilgrims.objects.select_related('account').get(id=int(object_id))
+        nationalities = Nationality.objects.all()
+        extra_context = extra_context or {}
+        extra_context['account']= pilgrim_profile
+        extra_context['nationality'] = nationalities
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )
 
+    # called after object is saved
+    def response_change(self, request, obj):
+        print("*********** change submitted *************")
+        print(obj.account.username)
+        for temp in request.POST:
+            print(temp)
+        return super().response_change(request, obj)
+
+    # def save_model(self, request, obj, form, change):
+    #
+    #     super().save_model(request, obj, form, change)
 
 admin_site.register(Pilgrims, PilgrimAdmin)
 
