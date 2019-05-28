@@ -116,17 +116,21 @@ class PilgrimAdmin(admin.ModelAdmin):
             request, object_id, form_url, extra_context=extra_context,
         )
 
-    # called after object is saved
+
     def response_change(self, request, obj):
-        print("*********** change submitted *************")
-        print(obj.account.username)
-        for temp in request.POST:
-            print(temp)
+        self.save_pilgrim_profile_update(request,obj)
         return super().response_change(request, obj)
 
-    # def save_model(self, request, obj, form, change):
-    #
-    #     super().save_model(request, obj, form, change)
+    def save_pilgrim_profile_update(self,request,obj):
+        obj.account.username = request.POST['username']
+        obj.account.email = request.POST['email']
+        obj.account.first_name = request.POST['first_name']
+        obj.account.last_name = request.POST['last_name']
+        if (request.POST['phone'] is not 0):
+            obj.account.phone_number= request.POST['phone']
+        if(request.POST['nationality'] is None):
+            obj.account.nationality = Nationality.objects.get(id=request.POST['nationality'])
+        obj.account.save()
 
 admin_site.register(Pilgrims, PilgrimAdmin)
 

@@ -34,7 +34,7 @@
                 <div>
                     <label for="id_nationality">Nationality</label>
                     <select name="nationality" id="id_nationality">
-                          <option value=""selected>None</option>
+                          <option value=None selected>None</option>
                           {% for n in nationality %}
                           <option value="{{ n.id }}">{{ n.name }}</option>
                           {% endfor %}
@@ -44,9 +44,10 @@
         <div class="form-row field-phone">
                 <div>
                         <label for="id_phone">Phone Number</label>
-                            <input type="text" name="phone" value={{ account.account.phone_number }} class="vTextField" maxlength="254" id="id_phone">
+                            <input type="number" name="phone" value=0 class="vTextField" maxlength="254" id="id_phone">
                 </div>
         </div>
+
     <div class="submit-row">
             <input type="submit" value="Update Profile" name="_update_pilgrim_profile">
     </div>
