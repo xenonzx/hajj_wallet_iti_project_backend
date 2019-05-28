@@ -34,7 +34,7 @@
                 <div>
                     <label for="id_nationality">Nationality</label>
                     <select name="nationality" id="id_nationality">
-                          <option value=None selected>None</option>
+                          <option value=0 selected>None</option>
                           {% for n in nationality %}
                           <option value="{{ n.id }}">{{ n.name }}</option>
                           {% endfor %}

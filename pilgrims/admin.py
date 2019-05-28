@@ -126,9 +126,9 @@ class PilgrimAdmin(admin.ModelAdmin):
         obj.account.email = request.POST['email']
         obj.account.first_name = request.POST['first_name']
         obj.account.last_name = request.POST['last_name']
-        if (request.POST['phone'] is not 0):
+        if int(request.POST['phone']) > 0:
             obj.account.phone_number= request.POST['phone']
-        if(request.POST['nationality'] is None):
+        if int(request.POST['nationality']) > 0:
             obj.account.nationality = Nationality.objects.get(id=request.POST['nationality'])
         obj.account.save()
 
