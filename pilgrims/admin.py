@@ -23,6 +23,16 @@ class PilgrimAdmin(admin.ModelAdmin):
     search_fields = ['account__nationality__name',
                      'account__username',
                      'account__first_name']
+    readonly_fields = (
+        'show_pilgrim_image',
+        'show_pilgrim_name',
+        'show_pilgrim_username',
+        'show_pilgrim_email',
+        'show_pilgrim_nationality',
+        'show_pilgrim_phone_number',
+        'show_pilgrim_transactions',
+
+    )
     fieldsets = (
                     ("Personal info",
                      {
@@ -53,7 +63,7 @@ class PilgrimAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
     def has_change_permission(self, request, obj=None):
-        return False
+        return True
     def has_view_permission(self, request, obj=None):
         return True
 
@@ -97,11 +107,11 @@ class PilgrimAdmin(admin.ModelAdmin):
     show_pilgrim_transactions.short_description = 'transaction'
 
     # def change_view(self, request, object_id, form_url='', extra_context=None):
+    #     pass
     #     p=Pilgrims.objects.get(id=int(object_id))
     #     print(p.pilgrim_account_id.all()) ### reverse relation
     #     print(object_id)
     #     return None
-
 
 
 admin_site.register(Pilgrims, PilgrimAdmin)
