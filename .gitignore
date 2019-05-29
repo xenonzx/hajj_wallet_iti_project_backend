@@ -1,7 +1,5 @@
 # environment variables
 env.cnf
-
-
 # editor configurations
 .idea/*
 
