@@ -7,6 +7,7 @@ from vendors.models import Vendor
 from payments.models import Transaction
 from django.db.models.functions import Concat
 from django.db.models import Value as V
+from rest_framework.decorators import authentication_classes, permission_classes
 
 import datetime
 
@@ -15,6 +16,8 @@ import datetime
 
 class Charts(viewsets.ViewSet):
 
+    @authentication_classes([])
+    @permission_classes([])
     def retrieve_pilgrims_ratio(self, request, format=None):
 
         statis = Pilgrims.objects.prefetch_related('account').filter(account__nationality_id__isnull=False) \

@@ -33,30 +33,24 @@ class NameRegistrationSerializer(RegisterSerializer):
     pilgrim.save()
 
 
-
 class PilgrimSerializer(serializers.ModelSerializer):
-  username = serializers.ReadOnlyField(source='account.username')
-  first_name = serializers.ReadOnlyField(source='account.first_name')
-  last_name = serializers.ReadOnlyField(source='account.last_name')
-  email = serializers.CharField(source='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
-  phone_number = serializers.CharField(source='account.phone_number')
-  gender = serializers.CharField(source='account.gender')
-  image = serializers.CharField(source='account.image')
-
+  username = serializers.ReadOnlyField()
+  first_name = serializers.ReadOnlyField()
+  last_name = serializers.ReadOnlyField()
+  email = serializers.CharField(validators=[UniqueValidator(queryset=Account.objects.all())])
+  phone_number = serializers.CharField()
+  gender = serializers.CharField()
+  image = serializers.CharField()
   class Meta:
     model= Pilgrims
     fields=['username','email' ,'first_name', 'last_name', 'phone_number', 'gender', 'image']
 
 
-
-
   def update(self, pilgrim, validated_data):
-
-    pilgrim.account.email = validated_data.get('email', validated_data['account']['email'])
-    pilgrim.account.phone_number = validated_data.get('phone_number', validated_data['account']['phone_number'])
-    pilgrim.account.gender = validated_data.get('gender', validated_data['account']['gender'])
-    pilgrim.account.image = validated_data.get('image', validated_data['account']['image'])
-    pilgrim.account.save()
+    pilgrim.email = validated_data.get('email', validated_data['email'])
+    pilgrim.phone_number = validated_data.get('phone_number', validated_data['phone_number'])
+    pilgrim.image = validated_data.get('image', validated_data['image'])
+    pilgrim.save()
 
     return pilgrim
 

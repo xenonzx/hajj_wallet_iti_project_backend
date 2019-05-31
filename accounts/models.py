@@ -36,5 +36,3 @@ class Account(AbstractUser):
 
 class Role(Group):
     pass
-
-
