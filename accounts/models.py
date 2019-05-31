@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import Group
 import os
 
 def update_filename(instance, filename):
@@ -30,4 +31,10 @@ class Account(AbstractUser):
 
     def __str__(self):
         return self.first_name
+
+
+
+class Role(Group):
+    pass
+
 

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
+    'statistics_app'
 ]
 SITE_ID = 1
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -107,15 +108,26 @@ WSGI_APPLICATION = 'hajwallet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.mysql',
+#
+#         'OPTIONS': {
+#             'read_default_file': os.path.join(BASE_DIR, 'env.cnf'),
+#         },
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
-
-        'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, 'env.cnf'),
-        },
+        'NAME': 'hajwallet',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
     }
 }
+
 
 
 # Password validation

@@ -114,6 +114,43 @@
                   </div>
                 </div>
               </div>
+    <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-danger">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">best selling vendors Last 7 days</h3>
+
+                      <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                      <canvas id="best_vendors" style="height: 248px; width: 497px;" width="497" height="248"></canvas>
+                    </div>
+                    <!-- /.box-body -->
+                  </div>
+                </div>
+
+        <div class="col-md-6">
+                    <div class="box box-danger">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">most active users</h3>
+
+                      <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                        <canvas id="active_users" style="height: 248px; width: 497px;" width="497" height="248"></canvas>
+                    </div>
+                    <!-- /.box-body -->
+                  </div>
+                </div>
+              </div>
 
 
 {% endblock %}
@@ -234,5 +271,116 @@
 
 </script>
 
+
+
+<script>
+            $.ajax({
+                    methode:'GET',
+                    url: 'statistics/chart/best_vendors',
+
+                    success:function(response)
+                    {
+                        console.log(response);
+                        var ctx = document.getElementById('best_vendors').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: response.labels,
+                                datasets: [{
+                                    label: 'Transactions',
+                                    data: response.defult,
+                                    backgroundColor: [
+                                        '#f56954',
+                                        '#00a65a',
+                                        '#f39c12',
+                                        '#00c0ef',
+                                        '#3c8dbc',
+                                        '#d2d6de'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    },error:function(response)
+                    {
+                        console.log('error');
+                        console.log(response);
+                    }
+                }
+            );
+
+</script>
+
+<script>
+            $.ajax({
+                    methode:'GET',
+                    url: 'statistics/chart/most_active_users',
+
+                    success:function(response)
+                    {
+                        console.log(response);
+                        var ctx = document.getElementById('active_users').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: response.labels,
+                                datasets: [{
+                                    label: 'Transactions',
+                                    data: response.defult,
+                                    backgroundColor: [
+                                        '#f56954',
+                                        '#00a65a',
+                                        '#f39c12',
+                                        '#00c0ef',
+                                        '#3c8dbc',
+                                        '#d2d6de'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    },error:function(response)
+                    {
+                        console.log('error');
+                        console.log(response);
+                    }
+                }
+            );
+
+</script>
 {% endblock %}
 

@@ -4,6 +4,11 @@ from rest_framework.response import Response
 from pilgrims.models import Pilgrims
 from django.db.models import Count
 from vendors.models import Vendor
+from payments.models import Transaction
+from django.db.models.functions import Concat
+from django.db.models import Value as V
+
+import datetime
 
 # Create your views here.
 
@@ -39,4 +44,39 @@ class Charts(viewsets.ViewSet):
             "labels":labels,
             "defult":defult_items,
         }
+        return Response(data)
+
+
+    def best_vendors(self, request, format=None):
+        from_date = datetime.datetime.now() - datetime.timedelta(days=7)
+
+        statis = Transaction.objects.filter(time_stamp__range=[from_date, datetime.datetime.now()]).prefetch_related('vendor') \
+            .prefetch_related('vendor__account') \
+            .filter(vendor__nationality_id__isnull=False) \
+            .annotate(dcount=Count('vendor__first_name'),full_name=Concat('vendor__first_name',V(' '),'vendor__last_name'))\
+            .order_by('-dcount')
+        labels = statis.values_list('full_name', flat=True)
+        defult_items = statis.values_list('dcount', flat=True)
+        data = {
+            "labels": labels,
+            "defult": defult_items,
+        }
+
+        return Response(data)
+
+    def most_active_users(self, request, format=None):
+        from_date = datetime.datetime.now() - datetime.timedelta(days=7)
+
+        statis = Transaction.objects.filter(time_stamp__range=[from_date, datetime.datetime.now()]).prefetch_related('pilgrim')\
+            .prefetch_related('pilgrim__account') \
+            .filter(pilgrim__nationality_id__isnull=False) \
+            .annotate(dcount=Count('pilgrim__first_name'),full_name=Concat('pilgrim__first_name',V(' '),'pilgrim__last_name'))\
+            .order_by('-dcount')
+        labels = statis.values_list('full_name', flat=True)
+        defult_items = statis.values_list('dcount', flat=True)
+        data = {
+            "labels": labels,
+            "defult": defult_items,
+        }
+
         return Response(data)
