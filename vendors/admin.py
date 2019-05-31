@@ -3,7 +3,7 @@ from .models import Category , Vendor
 from django.contrib import messages
 from payments.models import Transaction
 from custom_admin.admin import admin_site
-
+from accounts.models import Nationality
 class CategoryAdmin(admin.ModelAdmin):
     list_per_page = 10
 
@@ -49,7 +49,17 @@ class VendorAdmin(admin.ModelAdmin):
         'block_vendors',
         'remove_blocked_vendors'
         ]
+    readonly_fields = (
+        'view_vendor_image',
+        'view_vendor_name',
+        'view_vendor_username',
+        'view_vendor_email',
+        'view_vendor_nationality',
+        'view_vendor_phone_number',
+        'view_vendor_category',
+        'show_vendor_transactions',
 
+    )
     fieldsets = (
         ("Personal info",
          {
@@ -92,7 +102,7 @@ class VendorAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
     def has_change_permission(self, request, obj=None):
-        return False
+        return True
     def has_view_permission(self, request, obj=None):
         return True
 
@@ -121,6 +131,32 @@ class VendorAdmin(admin.ModelAdmin):
             vendor.account.save()
     remove_blocked_vendors.short_description = 'Activate account'
 
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        vendor_profile=Vendor.objects.select_related('account').get(id=int(object_id))
+        nationalities = Nationality.objects.all()
+        extra_context = extra_context or {}
+        extra_context['account']= vendor_profile
+        extra_context['nationality'] = nationalities
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )
+
+
+    def response_change(self, request, obj):
+        print(request.POST['nationality'])
+        self.save_vendor_profile_update(request,obj)
+        return super().response_change(request, obj)
+
+    def save_vendor_profile_update(self,request,obj):
+        obj.account.username = request.POST['username']
+        obj.account.email = request.POST['email']
+        obj.account.first_name = request.POST['first_name']
+        obj.account.last_name = request.POST['last_name']
+        if int(request.POST['phone']) > 0:
+            obj.account.phone_number= request.POST['phone']
+        if int(request.POST['nationality']) > 0:
+            obj.account.nationality = Nationality.objects.get(id=request.POST['nationality'])
+        obj.account.save()
 
 admin_site.register(Category, CategoryAdmin)
 admin_site.register(Vendor, VendorAdmin)

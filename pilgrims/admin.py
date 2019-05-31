@@ -2,6 +2,7 @@ from django.contrib import admin
 from custom_admin.admin import admin_site
 from pilgrims.models import Pilgrims
 from payments.models import Transaction
+from accounts.models import Nationality
 
 class PilgrimAdmin(admin.ModelAdmin):
 
@@ -23,6 +24,15 @@ class PilgrimAdmin(admin.ModelAdmin):
     search_fields = ['account__nationality__name',
                      'account__username',
                      'account__first_name']
+    readonly_fields = (
+        'show_pilgrim_image',
+        'show_pilgrim_name',
+        'show_pilgrim_username',
+        'show_pilgrim_email',
+        'show_pilgrim_nationality',
+        'show_pilgrim_phone_number',
+        'show_pilgrim_transactions',
+    )
     fieldsets = (
                     ("Personal info",
                      {
@@ -96,13 +106,31 @@ class PilgrimAdmin(admin.ModelAdmin):
 
     show_pilgrim_transactions.short_description = 'transaction'
 
-    # def change_view(self, request, object_id, form_url='', extra_context=None):
-    #     p=Pilgrims.objects.get(id=int(object_id))
-    #     print(p.pilgrim_account_id.all()) ### reverse relation
-    #     print(object_id)
-    #     return None
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        pilgrim_profile=Pilgrims.objects.select_related('account').get(id=int(object_id))
+        nationalities = Nationality.objects.all()
+        extra_context = extra_context or {}
+        extra_context['account']= pilgrim_profile
+        extra_context['nationality'] = nationalities
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )
 
 
+    def response_change(self, request, obj):
+        self.save_pilgrim_profile_update(request,obj)
+        return super().response_change(request, obj)
+
+    def save_pilgrim_profile_update(self,request,obj):
+        obj.account.username = request.POST['username']
+        obj.account.email = request.POST['email']
+        obj.account.first_name = request.POST['first_name']
+        obj.account.last_name = request.POST['last_name']
+        if int(request.POST['phone']) > 0:
+            obj.account.phone_number= request.POST['phone']
+        if int(request.POST['nationality']) > 0:
+            obj.account.nationality = Nationality.objects.get(id=request.POST['nationality'])
+        obj.account.save()
 
 admin_site.register(Pilgrims, PilgrimAdmin)
 
