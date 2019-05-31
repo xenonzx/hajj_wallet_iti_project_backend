@@ -8,6 +8,7 @@ from rest_framework.validators import UniqueValidator
 # from rest_auth.serializers import UserDetailsSerializer
 from vendors.models import Category
 from payments.models import Transaction
+from drf_extra_fields.geo_fields import PointField
 
 class customUserDetailsSerializer(serializers.ModelSerializer):
 
@@ -65,13 +66,11 @@ class NameRegistrationSerializer(RegisterSerializer):
     vendor.category = category_obj
     vendor.save()
 
+class PointFieldSerializer(serializers.Serializer):
+    point = PointField(required=False)
 
 # to display token with user details
 class VendorSerializer(serializers.ModelSerializer):
-
-  def get_location(self, obj):
-    return
-
   username = serializers.ReadOnlyField(source='vendor.account.username')
   first_name = serializers.ReadOnlyField(source='account.first_name')
   last_name = serializers.ReadOnlyField(source='account.last_name')
@@ -80,14 +79,34 @@ class VendorSerializer(serializers.ModelSerializer):
   gender = serializers.CharField(source='account.gender')
   type = serializers.CharField(source='account.type')
   image = serializers.CharField(source='account.image')
-  code=serializers.CharField(source='vendor.code')
-  location = serializers.SerializerMethodField(get_location)
+  code=serializers.CharField()
+  location = PointFieldSerializer()
   crn = serializers.IntegerField()
-  category_id=serializers.IntegerField()
+  category=serializers.SerializerMethodField()
+  nationality = serializers.SerializerMethodField()
+
   class Meta:
     model= Vendor
-    fields=('username','email' ,'first_name', 'last_name','gender','type' ,'phone_number', 'crn',
-            'code','category_id','image','location')
+    fields=('username','email' ,'first_name', 'last_name','nationality','gender','type' ,'phone_number', 'crn',
+            'code','category','image','location')
+
+  def get_nationality(self, obj):
+    return obj.account.nationality.name
+
+  def get_category(self, obj):
+    return obj.category.name
+
+
+  def update(self, vendor, validated_data):
+    vendor.account.phone_number = validated_data.get('phone_number', validated_data['account']['phone_number'])
+    vendor.account.image = validated_data.get('image', validated_data['account']['image'])
+    vendor.account.save()
+    # cat_id=Category.objects.filter(name=validated_data['category'])
+    # vendor.category.id=validated_data.get('category_id', cat_id)
+    # vendor.location = validated_data.get('location', validated_data['location'])
+    vendor.save()
+
+    return vendor
 
 class TransactionsSerializer(serializers.ModelSerializer):
     pilgrim_username = serializers.SerializerMethodField(read_only=True)

@@ -10,6 +10,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from payments.models import Transaction
 from rest_framework.exceptions import NotFound
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 
 
 class NameRegistrationView(RegisterView):
@@ -17,7 +19,7 @@ class NameRegistrationView(RegisterView):
   queryset = Pilgrims.objects.all()
 
   def create(self, request, *args, **kwargs):
-    print(request.data)
+
     serializer = self.get_serializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     self.perform_create(serializer)
@@ -33,23 +35,19 @@ class NameRegistrationView(RegisterView):
     }
     return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
+@receiver(post_save, sender=Pilgrims)
+def my_handler(sender, instance, created, **kwargs):
+  if created:
+    id = instance.account_id
+    user = Account.objects.get(pk=id)
+    user.is_active = True
+    user.save()
 
-class PilgrimDetailView(generics.RetrieveUpdateAPIView):
-  lookup_field = 'id'
-  queryset = Pilgrims.objects.all()
-  serializer_class = PilgrimSerializer
-
-  def user_update(request, pk):
-    pilgrim = Pilgrims.objects.get(id=pk)
-    if request.method == "PUT":
-      serializer = PilgrimSerializer(pilgrim, data=request.data)
-      if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-      else:
-        return Response({"error": serializer.errors, "error": True})
-    serializer = PilgrimSerializer(pilgrim)
-    return Response(serializer.data)
+class PilgrimsDetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Pilgrims.objects.all()
+    serializer_class = PilgrimSerializer
+    def get_object(self):
+      return self.request.user
 
 class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)

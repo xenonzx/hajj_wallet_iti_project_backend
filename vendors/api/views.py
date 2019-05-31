@@ -2,7 +2,7 @@ from rest_framework import generics,status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_auth.registration.views import RegisterView
-from .serializers import NameRegistrationSerializer, TransactionsSerializer
+from .serializers import NameRegistrationSerializer, TransactionsSerializer,VendorSerializer
 from pilgrims.models import Pilgrims
 from rest_framework.response import Response
 from vendors.models import Vendor
@@ -11,6 +11,12 @@ from rest_auth.views import LoginView
 from rest_framework.views import APIView
 from payments.models import Transaction
 from rest_framework.exceptions import NotFound
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+
+from django.contrib.gis.geos import GEOSGeometry
+
 
 class NameRegistrationView(RegisterView):
   queryset = Vendor.objects.all()
@@ -26,8 +32,24 @@ class NameRegistrationView(RegisterView):
       "message": "waiting for approved",
     }
     return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
+from itertools import chain
+class VendorDetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Vendor.objects.all()
+    serializer_class = VendorSerializer
+    def get_object(self):
+        acc=Account.objects.get(email=self.request.user.email)
+        vendor=Vendor.objects.get(account_id=acc.id)
+        return vendor
 
 
+@receiver(post_save, sender=Account)
+def my_handler(sender, instance,created, **kwargs):
+    # instance.is_active = False
+    if created:
+        id = instance.id
+        user = Account.objects.get(pk=id)
+        user.is_active=False
+        user.save()
 
 class CustomLoginView(LoginView):
   queryset = Vendor.objects.all()
@@ -36,8 +58,10 @@ class CustomLoginView(LoginView):
         account_details=Account.objects.filter(username=orginal_response.data['user']['username']).values('is_active','type','id')
         if account_details[0]['type'] == 'V':
           if account_details[0]['is_active']:
+            test=Vendor.objects.filter(account_id=account_details[0]['id']).values('location')
             vendor_details=Vendor.objects.filter(account_id=account_details[0]['id']).values('crn','code')
             mydata = {"vendor_details": vendor_details[0]}
+
         elif account_details[0]['type'] == 'P':
           mydata=''
         orginal_response.data.update(mydata)
@@ -53,3 +77,4 @@ class TransactionsView(APIView):
       serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
       return Response(serializer.data)
     raise NotFound(detail=" Vendor with no transactions",code=404)
+
