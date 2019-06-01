@@ -58,8 +58,7 @@ class CustomLoginView(LoginView):
         account_details=Account.objects.filter(username=orginal_response.data['user']['username']).values('is_active','type','id')
         if account_details[0]['type'] == 'V':
           if account_details[0]['is_active']:
-            test=Vendor.objects.filter(account_id=account_details[0]['id']).values('location')
-            vendor_details=Vendor.objects.filter(account_id=account_details[0]['id']).values('crn','code')
+            vendor_details=Vendor.objects.filter(account_id=account_details[0]['id']).values('crn','code','lat','long')
             mydata = {"vendor_details": vendor_details[0]}
 
         elif account_details[0]['type'] == 'P':

@@ -42,7 +42,8 @@ class NameRegistrationSerializer(RegisterSerializer):
   category = serializers.CharField(required=True)
   crn = serializers.IntegerField(required=True)
   code = serializers.CharField(required=True)
-  location= serializers.CharField(required=True)
+  lat= serializers.CharField(required=True)
+  long= serializers.CharField(required=True)
   type= serializers.CharField(required=False)
 
 
@@ -61,13 +62,13 @@ class NameRegistrationSerializer(RegisterSerializer):
     vendor =Vendor(account_id=user.pk)
     vendor.crn=self.validated_data.get('crn', '')
     vendor.code=self.validated_data.get('code', '')
-    vendor.location=self.validated_data.get('location', '')
+    vendor.lat=self.validated_data.get('lat', '')
+    vendor.long=self.validated_data.get('long', '')
     category_obj = Category.objects.get(name=self.validated_data.get('category', ''))
     vendor.category = category_obj
     vendor.save()
 
-class PointFieldSerializer(serializers.Serializer):
-    point = PointField(required=False)
+
 
 # to display token with user details
 class VendorSerializer(serializers.ModelSerializer):
@@ -80,7 +81,8 @@ class VendorSerializer(serializers.ModelSerializer):
   type = serializers.CharField(source='account.type')
   image = serializers.CharField(source='account.image')
   code=serializers.CharField()
-  location = PointFieldSerializer()
+  lat = serializers.CharField(required=True)
+  long = serializers.CharField(required=True)
   crn = serializers.IntegerField()
   category=serializers.SerializerMethodField()
   nationality = serializers.SerializerMethodField()
@@ -88,7 +90,7 @@ class VendorSerializer(serializers.ModelSerializer):
   class Meta:
     model= Vendor
     fields=('username','email' ,'first_name', 'last_name','nationality','gender','type' ,'phone_number', 'crn',
-            'code','category','image','location')
+            'code','category','image','lat','long')
 
   def get_nationality(self, obj):
     return obj.account.nationality.name

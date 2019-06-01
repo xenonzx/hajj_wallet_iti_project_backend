@@ -23,7 +23,7 @@ class Account(AbstractUser):
         ('P', 'Pilfrim'),
         ('V', 'Vendor'),
     )
-    phone_number=models.IntegerField(null=True,blank=True)
+    phone_number=models.BigIntegerField(null=True,blank=True)
     gender =models.CharField(max_length=1, choices=GENDER,null=True,blank=True)
     type =models.CharField(max_length=1, choices=Type,null=True,blank=True)
     image=models.ImageField(upload_to=update_filename, null=True,blank=True)
