@@ -11,3 +11,5 @@ env.cnf
 
 **/__pycache__/
 *.pyc
+# settings
+hajwallet/settings.py

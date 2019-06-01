@@ -11,16 +11,16 @@ class Category(models.Model):
 
 class Vendor(models.Model):
     account = models.ForeignKey(Account,null=True,blank=True,on_delete=models.CASCADE,related_name='vendor_account_id')
-    crn=models.IntegerField()
+    crn=models.BigIntegerField()
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
-    location = models.PointField()
-    code=models.CharField(max_length=250)
+    lat = models.DecimalField(max_digits=15,decimal_places=10,null=True,blank=True)
+    long = models.DecimalField(max_digits=15,decimal_places=10,null=True,blank=True)
+    code=models.CharField(max_length=250,null=True,blank=True)
 
     def __str__(self):
         return self.account.username
 
-    def __str__(self):
-        return self.account.username
+
 
     def view_vendor_name(self):
         return self.account.first_name + " " + self.account.last_name
