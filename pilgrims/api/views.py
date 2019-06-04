@@ -28,7 +28,7 @@ class NameRegistrationView(RegisterView):
     id=(obj.values('id')[0]['id'])
     token = Token.objects.filter(user_id=id).values('key')[0]
 
-    # Define how would you like your response data to look like.
+
     response_data = {
       "user": serializer.data,
       "token":token
@@ -43,11 +43,16 @@ def my_handler(sender, instance, created, **kwargs):
     user.is_active = True
     user.save()
 
-class PilgrimsDetailsView(generics.RetrieveUpdateDestroyAPIView):
+class PilgrimsDetailsView(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Pilgrims.objects.all()
     serializer_class = PilgrimSerializer
     def get_object(self):
-      return self.request.user
+      if(self.request.user.type != 'P'):
+        raise NotFound(detail="you are not a pilgrim", code=404)
+      else:
+        return self.request.user
+
 
 class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)

@@ -11,6 +11,8 @@ from payments.models import Transaction
 
 class NameRegistrationSerializer(RegisterSerializer):
 
+  email = serializers.CharField(required=True)
+  username = serializers.CharField(required=True)
   first_name = serializers.CharField(required=False)
   last_name = serializers.CharField(required=False)
   phone_number = serializers.IntegerField(required=False)
@@ -20,6 +22,8 @@ class NameRegistrationSerializer(RegisterSerializer):
   type = serializers.CharField(required=False)
 
   def custom_signup(self, request, user):
+    user.email = self.validated_data.get('email', '')
+    user.username = self.validated_data.get('username', '')
     user.first_name = self.validated_data.get('first_name', '')
     user.last_name = self.validated_data.get('last_name', '')
     user.phone_number=self.validated_data.get('phone_number', '')
@@ -28,7 +32,7 @@ class NameRegistrationSerializer(RegisterSerializer):
     user.type='P'
     nationality_obj = Nationality.objects.get(name=self.validated_data.get('nationality', ''))
     user.nationality = nationality_obj
-    user.save(update_fields=['first_name', 'last_name','type' ,'phone_number', 'gender', 'image', 'nationality_id'])
+    user.save(update_fields=['username','email','first_name', 'last_name','type' ,'phone_number', 'gender', 'image', 'nationality_id'])
     pilgrim =Pilgrims(account_id=user.pk)
     pilgrim.save()
 
@@ -37,21 +41,19 @@ class PilgrimSerializer(serializers.ModelSerializer):
   username = serializers.ReadOnlyField()
   first_name = serializers.ReadOnlyField()
   last_name = serializers.ReadOnlyField()
-  email = serializers.CharField(validators=[UniqueValidator(queryset=Account.objects.all())])
+  email = serializers.CharField(default='email',validators=[UniqueValidator(queryset=Account.objects.all())])
   phone_number = serializers.CharField()
-  gender = serializers.CharField()
-  image = serializers.CharField()
+  gender = serializers.CharField(default='gender')
+  image = serializers.ImageField()
   class Meta:
     model= Pilgrims
     fields=['username','email' ,'first_name', 'last_name', 'phone_number', 'gender', 'image']
 
 
   def update(self, pilgrim, validated_data):
-    pilgrim.email = validated_data.get('email', validated_data['email'])
     pilgrim.phone_number = validated_data.get('phone_number', validated_data['phone_number'])
     pilgrim.image = validated_data.get('image', validated_data['image'])
     pilgrim.save()
-
     return pilgrim
 
 class TransactionsSerializer(serializers.ModelSerializer):

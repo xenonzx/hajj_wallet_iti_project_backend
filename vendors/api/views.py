@@ -32,19 +32,24 @@ class NameRegistrationView(RegisterView):
       "message": "waiting for approved",
     }
     return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
-from itertools import chain
-class VendorDetailsView(generics.RetrieveUpdateDestroyAPIView):
+
+
+class VendorDetailsView(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     def get_object(self):
-        acc=Account.objects.get(email=self.request.user.email)
-        vendor=Vendor.objects.get(account_id=acc.id)
-        return vendor
+        if (self.request.user.type != 'V'):
+            raise NotFound(detail="you are not a vendor", code=404)
+        else:
+            acc=Account.objects.get(email=self.request.user.email)
+            vendor=Vendor.objects.get(account_id=acc.id)
+            return vendor
 
 
 @receiver(post_save, sender=Account)
 def my_handler(sender, instance,created, **kwargs):
-    # instance.is_active = False
+
     if created:
         id = instance.id
         user = Account.objects.get(pk=id)
