@@ -60,7 +60,7 @@ class NameRegistrationSerializer(RegisterSerializer):
     user.type = 'V'
     nationality_obj = Nationality.objects.get(name=self.validated_data.get('nationality', ''))
     user.nationality = nationality_obj
-    user.save(update_fields=['first_name','last_name', 'phone_number','type' ,'gender', 'image', 'nationality_id'])
+    user.save(update_fields=['username','email','first_name','last_name', 'phone_number','type' ,'gender', 'image', 'nationality_id'])
 
 
     vendor =Vendor(account_id=user.pk)
