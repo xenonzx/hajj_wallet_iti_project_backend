@@ -29,7 +29,9 @@ urlpatterns = [
     path('custom/login/', CustomLoginView.as_view(), name='my_custom_login'),
     path('rest_auth/password/reset/confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(),
         name='password_reset_confirm'),
-    url('statistics/', include('statistics_app.urls'))
+    url('statistics/', include('statistics_app.urls')),
+    path('wallet/', include('payments.api.urls'))
+
 
 
 ]

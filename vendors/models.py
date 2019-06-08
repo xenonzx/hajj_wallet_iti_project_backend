@@ -16,6 +16,7 @@ class Vendor(models.Model):
     lat = models.DecimalField(max_digits=15,decimal_places=10,null=True,blank=True)
     long = models.DecimalField(max_digits=15,decimal_places=10,null=True,blank=True)
     code=models.CharField(max_length=250,null=True,blank=True)
+    store_name = models.CharField(max_length=250,null=True,blank=True)
 
     def __str__(self):
         return self.account.username
