@@ -33,6 +33,8 @@ class TokenSerializer(serializers.ModelSerializer):
 
 class NameRegistrationSerializer(RegisterSerializer):
 
+  email = serializers.CharField(required=True)
+  username = serializers.CharField(required=True)
   first_name = serializers.CharField(required=True)
   last_name = serializers.CharField(required=True)
   phone_number = serializers.IntegerField(required=True)
@@ -42,12 +44,14 @@ class NameRegistrationSerializer(RegisterSerializer):
   category = serializers.CharField(required=True)
   crn = serializers.IntegerField(required=True)
   code = serializers.CharField(required=True)
-  lat= serializers.CharField(required=True)
-  long= serializers.CharField(required=True)
+  location= serializers.CharField(required=True)
+  # long= serializers.CharField(required=True)
   type= serializers.CharField(required=False)
 
 
   def custom_signup(self, request, user):
+    user.email = self.validated_data.get('email', '')
+    user.username = self.validated_data.get('username', '')
     user.first_name = self.validated_data.get('first_name', '')
     user.last_name = self.validated_data.get('last_name', '')
     user.phone_number=self.validated_data.get('phone_number', '')
@@ -56,14 +60,13 @@ class NameRegistrationSerializer(RegisterSerializer):
     user.type = 'V'
     nationality_obj = Nationality.objects.get(name=self.validated_data.get('nationality', ''))
     user.nationality = nationality_obj
-    user.save(update_fields=['first_name','last_name', 'phone_number','type' ,'gender', 'image', 'nationality_id'])
+    user.save(update_fields=['username','email','first_name','last_name', 'phone_number','type' ,'gender', 'image', 'nationality_id'])
 
 
     vendor =Vendor(account_id=user.pk)
     vendor.crn=self.validated_data.get('crn', '')
     vendor.code=self.validated_data.get('code', '')
-    vendor.lat=self.validated_data.get('lat', '')
-    vendor.long=self.validated_data.get('long', '')
+    vendor.location=self.validated_data.get('location', '')
     category_obj = Category.objects.get(name=self.validated_data.get('category', ''))
     vendor.category = category_obj
     vendor.save()
@@ -72,25 +75,24 @@ class NameRegistrationSerializer(RegisterSerializer):
 
 # to display token with user details
 class VendorSerializer(serializers.ModelSerializer):
-  username = serializers.ReadOnlyField(source='vendor.account.username')
-  first_name = serializers.ReadOnlyField(source='account.first_name')
-  last_name = serializers.ReadOnlyField(source='account.last_name')
-  email = serializers.CharField(source='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
+  username = serializers.ReadOnlyField(source='account.username')
+  first_name = serializers.ReadOnlyField(source='account.first_name',default='account.first_name')
+  last_name = serializers.ReadOnlyField(source='account.last_name',default='account.last_name')
+  email = serializers.CharField(source='account.email',default='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
   phone_number = serializers.CharField(source='account.phone_number')
-  gender = serializers.CharField(source='account.gender')
-  type = serializers.CharField(source='account.type')
+  gender = serializers.CharField(source='account.gender',default='account.gender')
+  type = serializers.CharField(source='account.type',default='account.type')
   image = serializers.CharField(source='account.image')
-  code=serializers.CharField()
-  lat = serializers.CharField(required=True)
-  long = serializers.CharField(required=True)
-  crn = serializers.IntegerField()
+  code=serializers.CharField(default='vendor.code')
+  location = serializers.CharField(default='vendor.location')
+  crn = serializers.IntegerField(default='vendor.crn')
   category=serializers.SerializerMethodField()
   nationality = serializers.SerializerMethodField()
 
   class Meta:
     model= Vendor
     fields=('username','email' ,'first_name', 'last_name','nationality','gender','type' ,'phone_number', 'crn',
-            'code','category','image','lat','long')
+            'code','category','image','location')
 
   def get_nationality(self, obj):
     return obj.account.nationality.name

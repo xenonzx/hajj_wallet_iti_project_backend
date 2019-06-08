@@ -13,8 +13,7 @@ class Vendor(models.Model):
     account = models.ForeignKey(Account,null=True,blank=True,on_delete=models.CASCADE,related_name='vendor_account_id')
     crn=models.BigIntegerField()
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
-    lat = models.DecimalField(max_digits=15,decimal_places=10,null=True,blank=True)
-    long = models.DecimalField(max_digits=15,decimal_places=10,null=True,blank=True)
+    location=models.PointField()
     code=models.CharField(max_length=250,null=True,blank=True)
     store_name = models.CharField(max_length=250,null=True,blank=True)
 
