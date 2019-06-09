@@ -13,37 +13,39 @@ class NameRegistrationSerializer(RegisterSerializer):
 
   email = serializers.CharField(required=True)
   username = serializers.CharField(required=True)
-  first_name = serializers.CharField(required=False)
-  last_name = serializers.CharField(required=False)
+  first_name = serializers.CharField(required=True)
+  last_name = serializers.CharField(required=True)
   phone_number = serializers.IntegerField(required=False)
-  gender = serializers.CharField(required=False)
+  gender = serializers.CharField(required=True)
   image = serializers.ImageField(required=False)
   nationality = serializers.CharField(required=True)
-  type = serializers.CharField(required=False)
+  type = serializers.ReadOnlyField(required=False)
 
   def custom_signup(self, request, user):
     user.email = self.validated_data.get('email', '')
     user.username = self.validated_data.get('username', '')
     user.first_name = self.validated_data.get('first_name', '')
     user.last_name = self.validated_data.get('last_name', '')
-    user.phone_number=self.validated_data.get('phone_number', '')
+    user.phone_number=self.validated_data.get('phone_number', )
     user.gender = self.validated_data.get('gender', '')
     user.image = self.validated_data.get('image', '')
     user.type='P'
     nationality_obj = Nationality.objects.get(name=self.validated_data.get('nationality', ''))
     user.nationality = nationality_obj
+
     user.save(update_fields=['username','email','first_name', 'last_name','type' ,'phone_number', 'gender', 'image', 'nationality_id'])
     pilgrim =Pilgrims(account_id=user.pk)
     pilgrim.save()
+
 
 
 class PilgrimSerializer(serializers.ModelSerializer):
   username = serializers.ReadOnlyField()
   first_name = serializers.ReadOnlyField()
   last_name = serializers.ReadOnlyField()
-  email = serializers.CharField(default='email',validators=[UniqueValidator(queryset=Account.objects.all())])
+  email = serializers.CharField()
   phone_number = serializers.CharField()
-  gender = serializers.CharField(default='gender')
+  gender = serializers.CharField()
   image = serializers.ImageField()
   class Meta:
     model= Pilgrims

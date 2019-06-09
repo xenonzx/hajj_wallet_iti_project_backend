@@ -5,7 +5,7 @@ import os
 
 def update_filename(instance, filename):
     path = "uploads/images/"
-    format = instance.username
+    format = instance.username # add timestamp to name and it's extension
     return os.path.join(path, format)
 
 class Nationality(models.Model):

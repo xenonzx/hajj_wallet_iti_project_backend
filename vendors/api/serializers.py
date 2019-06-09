@@ -37,7 +37,7 @@ class NameRegistrationSerializer(RegisterSerializer):
   username = serializers.CharField(required=True)
   first_name = serializers.CharField(required=True)
   last_name = serializers.CharField(required=True)
-  phone_number = serializers.IntegerField(required=True)
+  phone_number = serializers.IntegerField(required=False)
   gender = serializers.CharField(required=True)
   image = serializers.ImageField(required=False)
   nationality = serializers.CharField(required=True)
@@ -45,7 +45,7 @@ class NameRegistrationSerializer(RegisterSerializer):
   crn = serializers.IntegerField(required=True)
   code = serializers.CharField(required=True)
   location= serializers.CharField(required=True)
-  # long= serializers.CharField(required=True)
+
   type= serializers.CharField(required=False)
 
 
@@ -81,18 +81,19 @@ class VendorSerializer(serializers.ModelSerializer):
   email = serializers.CharField(source='account.email',default='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
   phone_number = serializers.CharField(source='account.phone_number')
   gender = serializers.CharField(source='account.gender',default='account.gender')
-  type = serializers.CharField(source='account.type',default='account.type')
+  # type = serializers.CharField(source='account.type',default='account.type')
   image = serializers.CharField(source='account.image')
   code=serializers.CharField(default='vendor.code')
-  location = serializers.CharField(default='vendor.location')
+  lat = serializers.SerializerMethodField()
+  long = serializers.SerializerMethodField()
   crn = serializers.IntegerField(default='vendor.crn')
   category=serializers.SerializerMethodField()
   nationality = serializers.SerializerMethodField()
 
   class Meta:
     model= Vendor
-    fields=('username','email' ,'first_name', 'last_name','nationality','gender','type' ,'phone_number', 'crn',
-            'code','category','image','location')
+    fields=('username','email' ,'first_name', 'last_name','nationality','gender' ,'phone_number', 'crn',
+            'code','category','image','lat','long')
 
   def get_nationality(self, obj):
     return obj.account.nationality.name
@@ -100,14 +101,16 @@ class VendorSerializer(serializers.ModelSerializer):
   def get_category(self, obj):
     return obj.category.name
 
+  def get_lat(self, obj):
+    return obj.location.x
+
+  def get_long(self, obj):
+    return obj.location.y
 
   def update(self, vendor, validated_data):
     vendor.account.phone_number = validated_data.get('phone_number', validated_data['account']['phone_number'])
     vendor.account.image = validated_data.get('image', validated_data['account']['image'])
     vendor.account.save()
-    # cat_id=Category.objects.filter(name=validated_data['category'])
-    # vendor.category.id=validated_data.get('category_id', cat_id)
-    # vendor.location = validated_data.get('location', validated_data['location'])
     vendor.save()
 
     return vendor
@@ -130,3 +133,8 @@ class TransactionsSerializer(serializers.ModelSerializer):
     def get_pilgrim_id(self, obj):
       return obj.pilgrim.id
 
+class CategorySerializer(serializers.ModelSerializer):
+  name=serializers.CharField()
+  class Meta:
+    model=Category
+    fields=['name']
