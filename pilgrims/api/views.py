@@ -78,3 +78,4 @@ class TransactionsView(APIView):
       serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
       return Response(serializer.data)
     raise NotFound(detail="pilgrim with no transactions",code=404)
+

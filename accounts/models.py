@@ -20,7 +20,7 @@ class Account(AbstractUser):
         ('M', 'Male'),
     )
     Type = (
-        ('P', 'Pilfrim'),
+        ('P', 'Pilgrim'),
         ('V', 'Vendor'),
     )
     phone_number=models.BigIntegerField(null=True,blank=True)
@@ -28,6 +28,8 @@ class Account(AbstractUser):
     type =models.CharField(max_length=1, choices=Type,null=True,blank=True)
     image=models.ImageField(upload_to=update_filename, null=True,blank=True)
     nationality= models.ForeignKey(Nationality,on_delete=models.SET_NULL,null=True)
+    stripe_account_id=models.CharField(max_length=250,blank=True,null=True)
+    payment_confirm_pin=models.CharField(max_length=250,blank=True,null=True)
 
     def __str__(self):
         return self.first_name

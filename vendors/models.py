@@ -15,6 +15,7 @@ class Vendor(models.Model):
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
     location=models.PointField()
     code=models.CharField(max_length=250,null=True,blank=True)
+    store_name = models.CharField(max_length=250,null=True,blank=True)
 
     def __str__(self):
         return self.account.username
