@@ -12,6 +12,8 @@ from payments.models import Transaction
 from rest_framework.exceptions import NotFound
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from accounts.models import Nationality
+
 
 
 class NameRegistrationView(RegisterView):
@@ -19,16 +21,20 @@ class NameRegistrationView(RegisterView):
   queryset = Pilgrims.objects.all()
 
   def create(self, request, *args, **kwargs):
-
     serializer = self.get_serializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+    submitted_nationality= Nationality.objects.filter(name=request.data['nationality'])
+    if len(submitted_nationality) is 0:
+      return Response({'error':"invalid nationality"},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
     self.perform_create(serializer)
     headers = self.get_success_headers(serializer.data)
     obj=Account.objects.filter(username=request.data.get('username'))
     id=(obj.values('id')[0]['id'])
     token = Token.objects.filter(user_id=id).values('key')[0]
 
-    # Define how would you like your response data to look like.
+
     response_data = {
       "user": serializer.data,
       "token":token
@@ -43,11 +49,25 @@ def my_handler(sender, instance, created, **kwargs):
     user.is_active = True
     user.save()
 
-class PilgrimsDetailsView(generics.RetrieveUpdateDestroyAPIView):
+class PilgrimsDetailsView(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Pilgrims.objects.all()
     serializer_class = PilgrimSerializer
     def get_object(self):
-      return self.request.user
+      if(self.request.user.type != 'P'):
+        raise NotFound(detail="you are not a pilgrim", code=404)
+      else:
+        return self.request.user
+
+class PilgrimsDetail(generics.RetrieveAPIView):
+  def get(self,request,id):
+    lookup_field = 'id'
+    pilgrim = Account.objects.filter(id=id)
+    if len(pilgrim) is 0:
+      return Response({'error':'not found'},status=status.HTTP_404_NOT_FOUND)
+    serializer_class = PilgrimSerializer
+    serializer = PilgrimSerializer(pilgrim[0])
+    return Response(serializer.data)
 
 class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)
@@ -58,3 +78,4 @@ class TransactionsView(APIView):
       serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
       return Response(serializer.data)
     raise NotFound(detail="pilgrim with no transactions",code=404)
+
