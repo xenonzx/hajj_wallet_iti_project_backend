@@ -44,12 +44,14 @@ class VendorDetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 @receiver(post_save, sender=Account)
 def my_handler(sender, instance,created, **kwargs):
-    # instance.is_active = False
+
     if created:
         id = instance.id
         user = Account.objects.get(pk=id)
-        user.is_active=False
-        user.save()
+        if user.type=='V':
+            user.is_active=False
+            user.save()
+
 
 class CustomLoginView(LoginView):
   queryset = Vendor.objects.all()
