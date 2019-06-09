@@ -130,3 +130,24 @@ class TransactionsSerializer(serializers.ModelSerializer):
     def get_pilgrim_id(self, obj):
       return obj.pilgrim.id
 
+class FindVendorSerializer(serializers.Serializer):
+  search_word = serializers.CharField(required=True)
+
+class VendorSearchSerializer(serializers.Serializer):
+  store_name=serializers.SerializerMethodField()
+  store_id =serializers.SerializerMethodField()
+  store_image = serializers.CharField(source='account.image')
+  store_category=serializers.SerializerMethodField()
+
+  class Meta:
+    fields = ['store_name', 'store_id', 'store_image', 'store_category']
+
+  def get_store_name(self,obj):
+    return obj.store_name
+
+  def get_store_id(self,obj):
+    return obj.account.id
+
+  def get_store_category(self,obj):
+    return obj.category.name
+
