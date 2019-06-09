@@ -12,6 +12,8 @@ from payments.models import Transaction
 from rest_framework.exceptions import NotFound
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from accounts.models import Nationality
+
 
 
 class NameRegistrationView(RegisterView):
@@ -19,9 +21,13 @@ class NameRegistrationView(RegisterView):
   queryset = Pilgrims.objects.all()
 
   def create(self, request, *args, **kwargs):
-
     serializer = self.get_serializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+    submitted_nationality= Nationality.objects.filter(name=request.data['nationality'])
+    if len(submitted_nationality) is 0:
+      return Response({'error':"invalid nationality"},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
     self.perform_create(serializer)
     headers = self.get_success_headers(serializer.data)
     obj=Account.objects.filter(username=request.data.get('username'))
@@ -53,6 +59,15 @@ class PilgrimsDetailsView(generics.RetrieveUpdateAPIView):
       else:
         return self.request.user
 
+class PilgrimsDetail(generics.RetrieveAPIView):
+  def get(self,request,id):
+    lookup_field = 'id'
+    pilgrim = Account.objects.filter(id=id)
+    if len(pilgrim) is 0:
+      return Response({'error':'not found'},status=status.HTTP_404_NOT_FOUND)
+    serializer_class = PilgrimSerializer
+    serializer = PilgrimSerializer(pilgrim[0])
+    return Response(serializer.data)
 
 class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)
