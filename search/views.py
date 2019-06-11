@@ -20,9 +20,15 @@ def retrieve_nearest_vendors(request, format=None):
         lng = float(request.data['long'])
         lt = float(request.data['lat'])
         radius = request.data['radius']
+        category = request.data['category']
         point = Point(lng,lt)
         print(point)
-        data =Vendor.objects.filter(location__distance_lt=(point, radius))
+        if category =='':
+            data =Vendor.objects.filter(location__distance_lt=(point, radius))
+        else:
+            data = Vendor.objects.filter(location__distance_lt=(point, radius),category_id = category)
+
+
         serializer = VendorSerializer(data, many=True)
 
         return JsonResponse(serializer.data,safe=False)
