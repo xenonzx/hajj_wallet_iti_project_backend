@@ -78,7 +78,7 @@ class VendorSerializer(serializers.ModelSerializer):
   username = serializers.ReadOnlyField(source='account.username')
   first_name = serializers.ReadOnlyField(source='account.first_name',default='account.first_name')
   last_name = serializers.ReadOnlyField(source='account.last_name',default='account.last_name')
-  email = serializers.CharField(source='account.email',default='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
+  email = serializers.ReadOnlyField(source='account.email',default='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
   phone_number = serializers.CharField(source='account.phone_number')
   gender = serializers.CharField(source='account.gender',default='account.gender')
   # type = serializers.CharField(source='account.type',default='account.type')
