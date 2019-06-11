@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url
-from django.urls import path, include
+from django.urls import path,include
 from vendors.api.views import CustomLoginView
 from rest_auth.views import PasswordResetConfirmView,PasswordResetView
 from custom_admin.admin import admin_site
@@ -31,12 +31,9 @@ urlpatterns = [
     path('rest_auth/password/reset/confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(),
         name='password_reset_confirm'),
     url('statistics/', include('statistics_app.urls')),
-
     url('search/', include('search.urls')),
     url('accounts/',include('accounts.api.urls')),
     path('wallet/', include('payments.api.urls')),
-
-
 
 
 ]

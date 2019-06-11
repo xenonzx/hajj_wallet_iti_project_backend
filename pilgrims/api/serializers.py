@@ -43,7 +43,7 @@ class PilgrimSerializer(serializers.ModelSerializer):
   username = serializers.ReadOnlyField()
   first_name = serializers.ReadOnlyField()
   last_name = serializers.ReadOnlyField()
-  email = serializers.CharField()
+  email = serializers.ReadOnlyField()
   phone_number = serializers.CharField()
   gender = serializers.CharField()
   image = serializers.ImageField()

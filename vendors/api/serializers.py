@@ -79,7 +79,7 @@ class VendorSerializer(serializers.ModelSerializer):
   username = serializers.ReadOnlyField(source='account.username')
   first_name = serializers.ReadOnlyField(source='account.first_name',default='account.first_name')
   last_name = serializers.ReadOnlyField(source='account.last_name',default='account.last_name')
-  email = serializers.CharField(source='account.email',default='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
+  email = serializers.ReadOnlyField(source='account.email',default='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
   phone_number = serializers.CharField(source='account.phone_number')
   gender = serializers.CharField(source='account.gender',default='account.gender')
   # type = serializers.CharField(source='account.type',default='account.type')
@@ -133,6 +133,27 @@ class TransactionsSerializer(serializers.ModelSerializer):
 
     def get_pilgrim_id(self, obj):
       return obj.pilgrim.id
+
+class FindVendorSerializer(serializers.Serializer):
+  search_word = serializers.CharField(required=True)
+
+class VendorSearchSerializer(serializers.Serializer):
+  store_name=serializers.SerializerMethodField()
+  store_id =serializers.SerializerMethodField()
+  store_image = serializers.CharField(source='account.image')
+  store_category=serializers.SerializerMethodField()
+
+  class Meta:
+    fields = ['store_name', 'store_id', 'store_image', 'store_category']
+
+  def get_store_name(self,obj):
+    return obj.store_name
+
+  def get_store_id(self,obj):
+    return obj.account.id
+
+  def get_store_category(self,obj):
+    return obj.category.name
 
 class CategorySerializer(serializers.ModelSerializer):
   name=serializers.CharField()

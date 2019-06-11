@@ -2,7 +2,8 @@ from rest_framework import generics,status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_auth.registration.views import RegisterView
-from .serializers import NameRegistrationSerializer, TransactionsSerializer,VendorSerializer,CategorySerializer
+from .serializers import NameRegistrationSerializer, TransactionsSerializer\
+    ,VendorSerializer, FindVendorSerializer , VendorSearchSerializer,CategorySerializer
 from pilgrims.models import Pilgrims
 from rest_framework.response import Response
 from vendors.models import Vendor
@@ -116,3 +117,15 @@ class TransactionsView(APIView):
       return Response(serializer.data)
     raise NotFound(detail=" Vendor with no transactions",code=404)
 
+class FindVendorView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request, format=None):
+        submitted_data = request.data
+        submitted_data_validate= FindVendorSerializer(data=submitted_data)
+        submitted_data_validate.is_valid(raise_exception=True)
+        vendors = Vendor.objects.select_related('account').filter(store_name__icontains=submitted_data['search_word'])
+        if len(vendors) is 0:
+            return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
+        serialized_vendors = VendorSearchSerializer(vendors,many=True)
+        return Response({'success':{'vendors':serialized_vendors.data}},
+                         status=status.HTTP_200_OK)
