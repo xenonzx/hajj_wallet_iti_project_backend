@@ -8,6 +8,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
 from vendors.models import Vendor
 from vendors.api.serializers import VendorSerializer
+from django.contrib.gis.geos import Polygon
 
 
 from rest_framework.decorators import api_view
@@ -21,7 +22,7 @@ def retrieve_nearest_vendors(request, format=None):
         radius = request.data['radius']
         point = Point(lng,lt)
         print(point)
-        data =Vendor.objects.filter(location=(point, Distance(km=radius)))
+        data =Vendor.objects.filter(location__distance_lt=(point, radius))
         serializer = VendorSerializer(data, many=True)
 
         return JsonResponse(serializer.data,safe=False)

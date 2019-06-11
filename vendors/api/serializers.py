@@ -75,6 +75,7 @@ class NameRegistrationSerializer(RegisterSerializer):
 
 # to display token with user details
 class VendorSerializer(serializers.ModelSerializer):
+  store_name = serializers.CharField(default='vendor.store_name')
   username = serializers.ReadOnlyField(source='account.username')
   first_name = serializers.ReadOnlyField(source='account.first_name',default='account.first_name')
   last_name = serializers.ReadOnlyField(source='account.last_name',default='account.last_name')
@@ -92,7 +93,7 @@ class VendorSerializer(serializers.ModelSerializer):
 
   class Meta:
     model= Vendor
-    fields=('username','email' ,'first_name', 'last_name','nationality','gender' ,'phone_number', 'crn',
+    fields=('store_name','username','email' ,'first_name', 'last_name','nationality','gender' ,'phone_number', 'crn',
             'code','category','image','lat','long')
 
   def get_nationality(self, obj):
