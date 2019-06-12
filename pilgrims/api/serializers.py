@@ -15,9 +15,9 @@ class NameRegistrationSerializer(RegisterSerializer):
   username = serializers.CharField(required=True)
   first_name = serializers.CharField(required=True)
   last_name = serializers.CharField(required=True)
-  phone_number = serializers.IntegerField(required=False)
+  phone_number = serializers.CharField(required=False)
   gender = serializers.CharField(required=True)
-  image = serializers.ImageField(required=False)
+  image = serializers.CharField(required=False)
   nationality = serializers.CharField(required=True)
   type = serializers.ReadOnlyField(required=False)
 
@@ -46,7 +46,7 @@ class PilgrimSerializer(serializers.ModelSerializer):
   email = serializers.ReadOnlyField()
   phone_number = serializers.CharField()
   gender = serializers.CharField()
-  image = serializers.ImageField()
+  image = serializers.CharField()
   class Meta:
     model= Pilgrims
     fields=['username','email' ,'first_name', 'last_name', 'phone_number', 'gender', 'image']
