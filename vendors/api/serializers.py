@@ -159,4 +159,4 @@ class CategorySerializer(serializers.ModelSerializer):
   name=serializers.CharField()
   class Meta:
     model=Category
-    fields=['name']
+    fields=['id', 'name']
