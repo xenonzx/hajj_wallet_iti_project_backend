@@ -23,7 +23,7 @@ class Search(APIView):
             category = int(request.data['category'])
             point = Point(lng,lt)
             print(point)
-            if category =='':
+            if category ==0:
                 data =Vendor.objects.filter(location__distance_lt=(point, radius))
             else:
                 data = Vendor.objects.filter(location__distance_lt=(point, radius),category_id = category)
