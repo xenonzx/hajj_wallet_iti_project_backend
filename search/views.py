@@ -19,11 +19,11 @@ class Search(APIView):
         if request.method == 'GET':
             lng = float(request.data['long'])
             lt = float(request.data['lat'])
-            radius = request.data['radius']
+            radius = float(request.data['radius'])
             category = int(request.data['category'])
             point = Point(lng,lt)
             print(point)
-            if category ==0:
+            if category == 0:
                 data =Vendor.objects.filter(location__distance_lt=(point, radius))
             else:
                 data = Vendor.objects.filter(location__distance_lt=(point, radius),category_id = category)

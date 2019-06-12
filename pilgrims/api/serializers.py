@@ -21,6 +21,20 @@ class NameRegistrationSerializer(RegisterSerializer):
   nationality = serializers.CharField(required=True)
   type = serializers.ReadOnlyField(required=False)
 
+  def validate(self, data):
+    """
+    Check that start is before finish.
+    """
+    if data['password1'] != data['password2']:
+      raise serializers.ValidationError({'password2': ["The two password fields didn't match."]})
+
+
+    if  Nationality.objects.filter(name=data['nationality']).exists() == False:
+      raise serializers.ValidationError({'nationality': ["invalid nationality."]})
+
+
+    return data
+
   def custom_signup(self, request, user):
     user.email = self.validated_data.get('email', '')
     user.username = self.validated_data.get('username', '')
