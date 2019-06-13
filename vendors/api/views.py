@@ -95,7 +95,7 @@ class CustomLoginView(LoginView):
         if account_details[0]['type'] == 'V':
           if account_details[0]['is_active']:
             vendor_loc = Vendor.objects.filter(account_id=account_details[0]['id']).values('location')
-            vendor_details=Vendor.objects.filter(account_id=account_details[0]['id']).values('crn','code')
+            vendor_details=Vendor.objects.filter(account_id=account_details[0]['id']).values('crn','code','store_name')
 
             mydata = {"vendor_details": vendor_details[0] ,
                       "location": {"lat": vendor_loc[0]['location'].x, "long" : vendor_loc[0]['location'].y}
