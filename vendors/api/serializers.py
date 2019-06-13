@@ -75,6 +75,7 @@ class NameRegistrationSerializer(RegisterSerializer):
 
 # to display token with user details
 class VendorSerializer(serializers.ModelSerializer):
+  id = serializers.ReadOnlyField(source='account.id')
   store_name = serializers.CharField(default='vendor.store_name')
   username = serializers.ReadOnlyField(source='account.username')
   first_name = serializers.ReadOnlyField(source='account.first_name',default='account.first_name')
