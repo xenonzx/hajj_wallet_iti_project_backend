@@ -87,7 +87,7 @@ class StripeCheckWallet(APIView):
   permission_classes = (IsAuthenticated,)
   def get(self,request , format=None):
     current_user=request.user
-    if current_user.stripe_account_id is None:
+    if current_user.stripe_account_id is not None:
       total_balance = get_stripe_balance(current_user)
       return Response({"success":{
               "total_balance": total_balance
