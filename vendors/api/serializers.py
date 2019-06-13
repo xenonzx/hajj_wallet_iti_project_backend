@@ -45,7 +45,7 @@ class NameRegistrationSerializer(RegisterSerializer):
   crn = serializers.IntegerField(required=True)
   code = serializers.CharField(required=True)
   location= serializers.CharField(required=True)
-
+  store_name = serializers.CharField(required=True)
   type= serializers.CharField(required=False)
 
 
@@ -66,6 +66,7 @@ class NameRegistrationSerializer(RegisterSerializer):
     vendor =Vendor(account_id=user.pk)
     vendor.crn=self.validated_data.get('crn', '')
     vendor.code=self.validated_data.get('code', '')
+    vendor.store_name=self.validated_data.get('store_name', '')
     vendor.location=self.validated_data.get('location', '')
     category_obj = Category.objects.get(name=self.validated_data.get('category', ''))
     vendor.category = category_obj
@@ -83,7 +84,6 @@ class VendorSerializer(serializers.ModelSerializer):
   email = serializers.ReadOnlyField(source='account.email',default='account.email',validators=[UniqueValidator(queryset=Account.objects.all())])
   phone_number = serializers.CharField(source='account.phone_number')
   gender = serializers.CharField(source='account.gender',default='account.gender')
-  # type = serializers.CharField(source='account.type',default='account.type')
   image = serializers.CharField(source='account.image')
   code=serializers.CharField(default='vendor.code')
   lat = serializers.SerializerMethodField()
