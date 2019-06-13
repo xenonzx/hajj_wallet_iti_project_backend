@@ -33,7 +33,7 @@ class TokenSerializer(serializers.ModelSerializer):
 
 class NameRegistrationSerializer(RegisterSerializer):
 
-  email = serializers.CharField(required=True)
+  email = serializers.EmailField(required=True)
   username = serializers.CharField(required=True)
   first_name = serializers.CharField(required=True)
   last_name = serializers.CharField(required=True)
