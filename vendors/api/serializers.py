@@ -94,7 +94,7 @@ class VendorSerializer(serializers.ModelSerializer):
 
   class Meta:
     model= Vendor
-    fields=('store_name','username','email' ,'first_name', 'last_name','nationality','gender' ,'phone_number', 'crn',
+    fields=('id','store_name','username','email' ,'first_name', 'last_name','nationality','gender' ,'phone_number', 'crn',
             'code','category','image','lat','long')
 
   def get_nationality(self, obj):
