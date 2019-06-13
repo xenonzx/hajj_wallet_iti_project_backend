@@ -8,6 +8,26 @@ from rest_framework.validators import UniqueValidator
 from rest_auth.serializers import UserDetailsSerializer
 from rest_framework.authtoken.models import Token
 from payments.models import Transaction
+from rest_framework.views import exception_handler
+
+
+def custom_exception_handler(exc, context):
+  # Call REST framework's default exception handler first,
+  # to get the standard error response.
+  response = exception_handler(exc, context)
+
+  # Update the structure of the response data.
+  if response is not None:
+    customized_response = {}
+    customized_response['errors'] = []
+
+    for key, value in response.data.items():
+      error = {'field': key, 'message': value}
+      customized_response['errors'].append(error)
+
+    response.data = customized_response
+
+  return response
 
 class NameRegistrationSerializer(RegisterSerializer):
 
@@ -15,11 +35,22 @@ class NameRegistrationSerializer(RegisterSerializer):
   username = serializers.CharField(required=True)
   first_name = serializers.CharField(required=True)
   last_name = serializers.CharField(required=True)
-  phone_number = serializers.IntegerField(required=False)
+  phone_number = serializers.CharField(required=False)
   gender = serializers.CharField(required=True)
-  image = serializers.ImageField(required=False)
+  image = serializers.CharField(required=False)
   nationality = serializers.CharField(required=True)
   type = serializers.ReadOnlyField(required=False)
+
+  def validate(self, data):
+    
+    if data['password1'] != data['password2']:
+      raise serializers.ValidationError({'password2': ["The two password fields didn't match."]})
+
+
+    if  Nationality.objects.filter(name=data['nationality']).exists() == False:
+      raise serializers.ValidationError({'nationality': ["invalid nationality."]})
+
+    return data
 
   def custom_signup(self, request, user):
     user.email = self.validated_data.get('email', '')
@@ -46,7 +77,7 @@ class PilgrimSerializer(serializers.ModelSerializer):
   email = serializers.ReadOnlyField()
   phone_number = serializers.CharField()
   gender = serializers.CharField()
-  image = serializers.ImageField()
+  image = serializers.CharField()
   class Meta:
     model= Pilgrims
     fields=['username','email' ,'first_name', 'last_name', 'phone_number', 'gender', 'image']

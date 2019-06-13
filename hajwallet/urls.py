@@ -36,5 +36,4 @@ urlpatterns = [
     path('wallet/', include('payments.api.urls')),
 
 
-
 ]
