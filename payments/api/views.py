@@ -87,13 +87,12 @@ class StripeCheckWallet(APIView):
   permission_classes = (IsAuthenticated,)
   def get(self,request , format=None):
     current_user=request.user
-    if current_user.stripe_account_id:
+    if current_user.stripe_account_id is None:
       total_balance = get_stripe_balance(current_user)
       return Response({"success":{
               "total_balance": total_balance
       }},status=status.HTTP_200_OK)
-    else:
-      return Response({"error":"user doesn't have wallet"},status=status.HTTP_204_NO_CONTENT)
+    return Response({"error":"user doesn't have wallet"},status=status.HTTP_204_NO_CONTENT)
 
 class StripeCreateWallet(APIView):
   permission_classes = (IsAuthenticated,)
