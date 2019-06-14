@@ -70,13 +70,15 @@ REST_AUTH_SERIALIZERS = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'EXCEPTION_HANDLER': 'pilgrims.api.serializers.custom_exception_handler',
+                         'DEFAULT_AUTHENTICATION_CLASSES': (
        'rest_framework.authentication.TokenAuthentication',
    ),
     'DEFAULT_PERMISSION_CLASSES': (
         #'rest_framework.permissions.IsAuthenticated',
     ),
-    'EXCEPTION_HANDLER': 'pilgrims.api.serializers.custom_exception_handler',
+
+  'EXCEPTION_HANDLER': 'pilgrims.api.serializers.custom_exception_handler',
 }
 
 
