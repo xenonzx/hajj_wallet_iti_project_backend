@@ -37,7 +37,7 @@ class NameRegistrationView(RegisterView):
 
     response_data = {
       "user": serializer.data,
-      "token":token
+      "token":token['key']
     }
     return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
