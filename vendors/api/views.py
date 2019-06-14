@@ -100,7 +100,7 @@ class CustomLoginView(LoginView):
             mydata = {
                       "vendor_details": vendor_details[0] ,
                        "token": orginal_response.data['key'],
-                      "location": {"lat": vendor_loc[0]['location'].x, "long" : vendor_loc[0]['location'].y}
+                      "location": {"lat": vendor_loc[0]['location'].y, "long" : vendor_loc[0]['location'].x}
                       }
 
         elif account_details[0]['type'] == 'P':

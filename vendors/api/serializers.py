@@ -105,10 +105,10 @@ class VendorSerializer(serializers.ModelSerializer):
     return obj.category.name
 
   def get_lat(self, obj):
-    return obj.location.x
+    return obj.location.y
 
   def get_long(self, obj):
-    return obj.location.y
+    return obj.location.x
 
   def update(self, vendor, validated_data):
     vendor.account.phone_number = validated_data.get('phone_number', validated_data['account']['phone_number'])
