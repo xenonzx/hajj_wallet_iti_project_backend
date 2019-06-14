@@ -138,5 +138,8 @@ class CodeVendorView(APIView):
     permission_classes = (IsAuthenticated,)
     def post(self,request):
         vendor=Vendor.objects.filter(code=request.data['code'])
-        serializer = VendorSerializer(vendor, many=True, context={'request': request})
-        return Response(serializer.data)
+        if vendor:
+            serializer = VendorSerializer(vendor, many=True, context={'request': request})
+            return Response(serializer.data)
+        else:
+            raise NotFound(detail="There is not vendor with this code",code=404)
