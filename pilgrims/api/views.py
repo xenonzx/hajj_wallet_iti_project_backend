@@ -60,6 +60,7 @@ class PilgrimsDetailsView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 class PilgrimsDetail(generics.RetrieveAPIView):
+  permission_classes = (IsAuthenticated,)
   def get(self,request,id):
     lookup_field = 'id'
     pilgrim = Account.objects.filter(id=id)
