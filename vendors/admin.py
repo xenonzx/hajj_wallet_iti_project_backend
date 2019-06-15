@@ -4,6 +4,8 @@ from django.contrib import messages
 from payments.models import Transaction
 from custom_admin.admin import admin_site
 from accounts.models import Nationality
+from django.core.mail import send_mail
+
 class CategoryAdmin(admin.ModelAdmin):
     list_per_page = 10
 
@@ -129,7 +131,20 @@ class VendorAdmin(admin.ModelAdmin):
         for vendor in queryset:
             vendor.account.is_active=True
             vendor.account.save()
+            self.ActiveVendorEmail(vendor)
     remove_blocked_vendors.short_description = 'Activate account'
+
+    def ActiveVendorEmail(self,vendor):
+        send_mail(
+            'Hajwallet Activation',
+            'Dear '+vendor.account.username +"\n \n"
+            '  Hope our email finds you well \n'                                 
+            '  Congratulations Your account is active now you can login and make transaction with pilgrims. \n \n'
+            "Hajwallet Team",
+            'Hajwallet@example.com',
+            [vendor.account.email],
+            fail_silently=False,
+        )
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         vendor_profile=Vendor.objects.select_related('account').get(id=int(object_id))
