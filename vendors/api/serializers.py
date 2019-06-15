@@ -40,7 +40,7 @@ class NameRegistrationSerializer(RegisterSerializer):
   last_name = serializers.CharField(required=True)
   phone_number = serializers.IntegerField(required=False)
   gender = serializers.CharField(required=True)
-  image = serializers.ImageField(required=False)
+  image = serializers.CharField(required=False)
   nationality = serializers.CharField(required=True)
   category = serializers.CharField(required=True)
   crn = serializers.IntegerField(required=True)

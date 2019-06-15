@@ -129,8 +129,8 @@ class FindVendorView(APIView):
         submitted_data_validate= FindVendorSerializer(data=submitted_data)
         submitted_data_validate.is_valid(raise_exception=True)
         vendors = Vendor.objects.select_related('account').filter(store_name__icontains=submitted_data['search_word'])
-        if len(vendors) is 0:
-            return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
+        # if len(vendors) is 0:
+        #     return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
 
         serializer = VendorSerializer(vendors, many=True)
         return Response(serializer.data)
