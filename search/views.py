@@ -15,8 +15,8 @@ from rest_framework.decorators import api_view
 # @api_view(['GET'])
 class Search(APIView):
     permission_classes = (IsAuthenticated,)
-    def get(self,request, format=None):
-        if request.method == 'GET':
+    def post(self,request, format=None):
+        if request.method == 'POST':
             lng = float(request.data['long'])
             lt = float(request.data['lat'])
             radius = float(request.data['radius'])
@@ -31,5 +31,5 @@ class Search(APIView):
 
             serializer = VendorSerializer(data, many=True)
 
-            return JsonResponse(serializer.data,safe=False)
+            return Response(serializer.data)
 

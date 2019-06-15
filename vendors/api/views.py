@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from vendors.models import Category
 from accounts.models import Nationality
 from django.contrib.gis.geos import GEOSGeometry
+from django.http import  JsonResponse
 
 
 class NameRegistrationView(RegisterView):
@@ -130,8 +131,12 @@ class FindVendorView(APIView):
         vendors = Vendor.objects.select_related('account').filter(store_name__icontains=submitted_data['search_word'])
         if len(vendors) is 0:
             return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
-        serialized_vendors = VendorSearchSerializer(vendors,many=True)
-        return Response({'success':{'vendors':serialized_vendors.data}},
-                         status=status.HTTP_200_OK)
+
+        serializer = VendorSerializer(vendors, many=True)
+        return Response(serializer.data)
+
+        # serialized_vendors = VendorSearchSerializer(vendors,many=True)
+        # return Response({'success':{'vendors':serialized_vendors.data}},
+        #                  status=status.HTTP_200_OK)
 
 
