@@ -12,14 +12,14 @@ class VendorScanSerializer(serializers.Serializer):
 
 class VendorConfirmSerializer(serializers.ModelSerializer):
     store_name = serializers.SerializerMethodField()
-    store_image = serializers.CharField(source='account.image')
-    store_id = serializers.SerializerMethodField()
-    store_username= serializers.SerializerMethodField()
-    store_category= serializers.SerializerMethodField()
+    image = serializers.CharField(source='account.image')
+    id = serializers.SerializerMethodField()
+    username= serializers.SerializerMethodField()
+    category= serializers.SerializerMethodField()
 
     class Meta:
         model= Vendor
-        fields=('store_name','store_image','store_id','store_username','store_category')
+        fields=('store_name','image','id','username','category')
 
     def get_store_name(self,obj):
         return obj.store_name
