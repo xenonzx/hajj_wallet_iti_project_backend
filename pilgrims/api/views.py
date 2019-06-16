@@ -37,7 +37,7 @@ class NameRegistrationView(RegisterView):
 
     response_data = {
       "user": serializer.data,
-      "token":token
+      "token":token['key']
     }
     return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -60,6 +60,7 @@ class PilgrimsDetailsView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 class PilgrimsDetail(generics.RetrieveAPIView):
+  permission_classes = (IsAuthenticated,)
   def get(self,request,id):
     lookup_field = 'id'
     pilgrim = Account.objects.filter(id=id)

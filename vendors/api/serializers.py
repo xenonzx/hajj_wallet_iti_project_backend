@@ -8,6 +8,7 @@ from rest_framework.validators import UniqueValidator
 # from rest_auth.serializers import UserDetailsSerializer
 from vendors.models import Category
 from payments.models import Transaction
+import hashlib
 from drf_extra_fields.geo_fields import PointField
 
 class customUserDetailsSerializer(serializers.ModelSerializer):
@@ -39,11 +40,11 @@ class NameRegistrationSerializer(RegisterSerializer):
   last_name = serializers.CharField(required=True)
   phone_number = serializers.IntegerField(required=False)
   gender = serializers.CharField(required=True)
-  image = serializers.ImageField(required=False)
+  image = serializers.CharField(required=False)
   nationality = serializers.CharField(required=True)
   category = serializers.CharField(required=True)
   crn = serializers.IntegerField(required=True)
-  code = serializers.CharField(required=True)
+  code = serializers.CharField(required=False)
   location= serializers.CharField(required=True)
   store_name = serializers.CharField(required=True)
   type= serializers.CharField(required=False)
@@ -65,7 +66,7 @@ class NameRegistrationSerializer(RegisterSerializer):
 
     vendor =Vendor(account_id=user.pk)
     vendor.crn=self.validated_data.get('crn', '')
-    vendor.code=self.validated_data.get('code', '')
+    vendor.code=hashlib.sha256((user.username).encode()).hexdigest()
     vendor.store_name=self.validated_data.get('store_name', '')
     vendor.location=self.validated_data.get('location', '')
     category_obj = Category.objects.get(name=self.validated_data.get('category', ''))
@@ -104,10 +105,10 @@ class VendorSerializer(serializers.ModelSerializer):
     return obj.category.name
 
   def get_lat(self, obj):
-    return obj.location.x
+    return obj.location.y
 
   def get_long(self, obj):
-    return obj.location.y
+    return obj.location.x
 
   def update(self, vendor, validated_data):
     vendor.account.phone_number = validated_data.get('phone_number', validated_data['account']['phone_number'])

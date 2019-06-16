@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from vendors.models import Category
 from accounts.models import Nationality
 from django.contrib.gis.geos import GEOSGeometry
+from django.http import  JsonResponse
 
 
 class NameRegistrationView(RegisterView):
@@ -100,7 +101,7 @@ class CustomLoginView(LoginView):
             mydata = {
                       "vendor_details": vendor_details[0] ,
                        "token": orginal_response.data['key'],
-                      "location": {"lat": vendor_loc[0]['location'].x, "long" : vendor_loc[0]['location'].y}
+                      "location": {"lat": vendor_loc[0]['location'].y, "long" : vendor_loc[0]['location'].x}
                       }
 
         elif account_details[0]['type'] == 'P':
@@ -128,8 +129,14 @@ class FindVendorView(APIView):
         submitted_data_validate= FindVendorSerializer(data=submitted_data)
         submitted_data_validate.is_valid(raise_exception=True)
         vendors = Vendor.objects.select_related('account').filter(store_name__icontains=submitted_data['search_word'])
-        if len(vendors) is 0:
-            return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
-        serialized_vendors = VendorSearchSerializer(vendors,many=True)
-        return Response({'success':{'vendors':serialized_vendors.data}},
-                         status=status.HTTP_200_OK)
+        # if len(vendors) is 0:
+        #     return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
+
+        serializer = VendorSerializer(vendors, many=True)
+        return Response(serializer.data)
+
+        # serialized_vendors = VendorSearchSerializer(vendors,many=True)
+        # return Response({'success':{'vendors':serialized_vendors.data}},
+        #                  status=status.HTTP_200_OK)
+
+

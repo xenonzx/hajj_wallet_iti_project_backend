@@ -55,14 +55,21 @@ INSTALLED_APPS = [
     'statistics_app'
 ]
 SITE_ID = 1
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = 'b709a983278255'
-EMAIL_HOST_PASSWORD = 'a6993de88f2a66'
-EMAIL_PORT = '2525'
-DEFAULT_FROM_EMAIL = 'My Site <noreply@mysite.com>'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'hajwallettest'
+EMAIL_HOST_PASSWORD = 'haj15987wallet'
+EMAIL_PORT = 587
+
+# EMAIL_HOST = 'smtp.mailtrap.io'
+# EMAIL_HOST_USER = 'b709a983278255'
+# EMAIL_HOST_PASSWORD = 'a6993de88f2a66'
+# EMAIL_PORT = '2525'
+# DEFAULT_FROM_EMAIL = 'My Site <noreply@mysite.com>'
+# EMAIL_USE_TLS = False
 
 REST_AUTH_SERIALIZERS = {
     # 'USER_DETAILS_SERIALIZER': 'vendors.api.serializers.customUserDetailsSerializer',
@@ -77,6 +84,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         #'rest_framework.permissions.IsAuthenticated',
     ),
+
   'EXCEPTION_HANDLER': 'pilgrims.api.serializers.custom_exception_handler',
 }
 
