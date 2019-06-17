@@ -57,15 +57,15 @@ class VendorDetailsView(generics.RetrieveUpdateAPIView):
             vendor=Vendor.objects.get(account_id=acc.id)
             return vendor
 
-class VendorsDetails(generics.RetrieveAPIView):
+
+class VendorsDetails(APIView):
     permission_classes = (IsAuthenticated,)
-    lookup_field = 'id'
-    queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
-    def vendor_detail(request, pk):
-        vendor = Vendor.objects.get(id=pk)
-        serializer = VendorSerializer(vendor)
+    def post(self,request):
+        vendor=Vendor.objects.select_related('account').filter(account_id=request.data['id'])
+        serializer=VendorSerializer(vendor,many=True)
         return Response(serializer.data)
+
 
 class CategoryList(generics.ListAPIView):
     queryset=Category.objects.all()
