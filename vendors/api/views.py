@@ -57,15 +57,15 @@ class VendorDetailsView(generics.RetrieveUpdateAPIView):
             vendor=Vendor.objects.get(account_id=acc.id)
             return vendor
 
-class VendorsDetails(generics.RetrieveAPIView):
+
+class VendorsDetails(APIView):
     permission_classes = (IsAuthenticated,)
-    lookup_field = 'id'
-    queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
-    def vendor_detail(request, pk):
-        vendor = Vendor.objects.get(id=pk)
-        serializer = VendorSerializer(vendor)
+    def post(self,request):
+        vendor=Vendor.objects.select_related('account').filter(account_id=request.data['id'])
+        serializer=VendorSerializer(vendor,many=True)
         return Response(serializer.data)
+
 
 class CategoryList(generics.ListAPIView):
     queryset=Category.objects.all()
@@ -116,7 +116,14 @@ class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)
 
   def get(self, request, format=None):
-    transactions = Transaction.objects.select_related('pilgrim').filter(vendor_id=request.user.id)
+    # print(request.user.id)
+    transactions = Transaction.objects.filter(vendor_id=request.user.id).prefetch_related('pilgrim')
+
+    pilfrim=Pilgrims.objects.filter(account_id=transactions[0].pilgrim_id)
+
+    print(transactions)
+
+    # return Response(transactions)
     if len(transactions)>0:
       serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
       return Response(serializer.data)

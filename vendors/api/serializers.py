@@ -40,7 +40,7 @@ class NameRegistrationSerializer(RegisterSerializer):
   last_name = serializers.CharField(required=True)
   phone_number = serializers.IntegerField(required=False)
   gender = serializers.CharField(required=True)
-  image = serializers.ImageField(required=False)
+  image = serializers.CharField(required=False)
   nationality = serializers.CharField(required=True)
   category = serializers.CharField(required=True)
   crn = serializers.IntegerField(required=True)
@@ -77,7 +77,7 @@ class NameRegistrationSerializer(RegisterSerializer):
 
 # to display token with user details
 class VendorSerializer(serializers.ModelSerializer):
-  id = serializers.ReadOnlyField(source='account.id')
+  id = serializers.ReadOnlyField(source='account.vendor.id')
   store_name = serializers.CharField(default='vendor.store_name')
   username = serializers.ReadOnlyField(source='account.username')
   first_name = serializers.ReadOnlyField(source='account.first_name',default='account.first_name')
