@@ -116,7 +116,11 @@ class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)
 
   def get(self, request, format=None):
-    transactions = Transaction.objects.select_related('pilgrim').filter(vendor_id=request.user.id)
+    transactions = Transaction.objects.filter(vendor_id=request.user.id).prefetch_related('pilgrim')\
+        .prefetch_related('pilgrim__account')
+    print(transactions)
+    # return Response(transactions)
+    # transactions = Transaction.objects.select_related('pilgrim').filter(vendor_id=request.user.id)
     if len(transactions)>0:
       serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
       return Response(serializer.data)
