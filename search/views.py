@@ -33,7 +33,7 @@ class Search(APIView):
 
             for vendor in serializer.data:
                 p2 = Point(vendor['long'], vendor['lat'])
-                distance = point.distance(p2)
+                distance = point.distance(p2) * 100
                 vendor['distance'] = distance
 
             return Response(serializer.data)
