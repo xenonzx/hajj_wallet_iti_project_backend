@@ -116,6 +116,7 @@ class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)
 
   def get(self, request, format=None):
+<<<<<<< HEAD
     # print(request.user.id)
     transactions = Transaction.objects.filter(vendor_id=request.user.id).prefetch_related('pilgrim')
 
@@ -124,6 +125,13 @@ class TransactionsView(APIView):
     print(transactions)
 
     # return Response(transactions)
+=======
+    transactions = Transaction.objects.filter(vendor_id=request.user.id).prefetch_related('pilgrim')\
+        .prefetch_related('pilgrim__account')
+    print(transactions)
+    # return Response(transactions)
+    # transactions = Transaction.objects.select_related('pilgrim').filter(vendor_id=request.user.id)
+>>>>>>> 7094aff154387660e7fc8ed840aad82dd173d3a5
     if len(transactions)>0:
       serializer = TransactionsSerializer(transactions, many=True , context={'request': request})
       return Response(serializer.data)
@@ -136,8 +144,8 @@ class FindVendorView(APIView):
         submitted_data_validate= FindVendorSerializer(data=submitted_data)
         submitted_data_validate.is_valid(raise_exception=True)
         vendors = Vendor.objects.select_related('account').filter(store_name__icontains=submitted_data['search_word'])
-        if len(vendors) is 0:
-            return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
+        # if len(vendors) is 0:
+        #     return Response({'error':"no matching vendor"},status=status.HTTP_404_NOT_FOUND)
 
         serializer = VendorSerializer(vendors, many=True)
         return Response(serializer.data)

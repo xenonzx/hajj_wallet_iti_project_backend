@@ -30,6 +30,7 @@ class VendorConfirmSerializer(serializers.ModelSerializer):
     def get_store_category(self,obj):
         return obj.category.name
 
+
 class WalletChargeSerializer(serializers.Serializer):
     card_number = serializers.IntegerField()
     exp_month = serializers.IntegerField()

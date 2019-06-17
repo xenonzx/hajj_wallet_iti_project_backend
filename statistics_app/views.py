@@ -56,6 +56,7 @@ class Charts(viewsets.ViewSet):
         statis = Transaction.objects.filter(time_stamp__range=[from_date, datetime.datetime.now()]).prefetch_related('vendor') \
             .prefetch_related('vendor__account') \
             .filter(vendor__nationality_id__isnull=False) \
+            .values('vendor__first_name', 'vendor__last_name') \
             .annotate(dcount=Count('vendor__first_name'),full_name=Concat('vendor__first_name',V(' '),'vendor__last_name'))\
             .order_by('-dcount')
         labels = statis.values_list('full_name', flat=True)
@@ -73,7 +74,8 @@ class Charts(viewsets.ViewSet):
         statis = Transaction.objects.filter(time_stamp__range=[from_date, datetime.datetime.now()]).prefetch_related('pilgrim')\
             .prefetch_related('pilgrim__account') \
             .filter(pilgrim__nationality_id__isnull=False) \
-            .annotate(dcount=Count('pilgrim__first_name'),full_name=Concat('pilgrim__first_name',V(' '),'pilgrim__last_name'))\
+            .values('pilgrim__first_name','pilgrim__last_name')\
+            .annotate(full_name=Concat('pilgrim__first_name',V(' '),'pilgrim__last_name'),dcount=Count('full_name'))\
             .order_by('-dcount')
         labels = statis.values_list('full_name', flat=True)
         defult_items = statis.values_list('dcount', flat=True)
