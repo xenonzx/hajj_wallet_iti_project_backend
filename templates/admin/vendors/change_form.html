@@ -2,59 +2,6 @@
 {% load i18n admin_urls %}
 
 
-{% block after_field_sets %}
-<fieldset class="module aligned ">
-    <h2> Edit Pilgrim Profile </h2>
-    <form>
-    <div class="form-row field-username">
-                <div>
-                        <label class="required" for="id_username">Username:</label>
-                            <input type="text" name="username" value={{ account.account.username }} class="vTextField" maxlength="150" required="" id="id_username">
-                </div>
-        </div>
-        <div class="form-row field-first_name">
-                <div>
-                        <label for="id_first_name">First name:</label>
-                            <input type="text" name="first_name" value={{ account.account.first_name }} class="vTextField" maxlength="30" id="id_first_name">
-                </div>
-        </div>
-        <div class="form-row field-last_name">
-                <div>
-                        <label for="id_last_name">Last name:</label>
-                            <input type="text" name="last_name" value={{ account.account.last_name }} class="vTextField" maxlength="150" id="id_last_name">
-                </div>
-        </div>
-        <div class="form-row field-email">
-                <div>
-                        <label for="id_email">Email address:</label>
-                            <input type="email" name="email" value={{ account.account.email }} class="vTextField" maxlength="254" id="id_email">
-                </div>
-        </div>
-        <div class="form-row field-nationality">
-                <div>
-                    <label for="id_nationality">Nationality</label>
-                    <select name="nationality" id="id_nationality">
-                          <option value=0 selected>None</option>
-                          {% for n in nationality %}
-                          <option value="{{ n.id }}">{{ n.name }}</option>
-                          {% endfor %}
-                    </select>
-                </div>
-        </div>
-        <div class="form-row field-phone">
-                <div>
-                        <label for="id_phone">Phone Number</label>
-                            <input type="number" name="phone" value=0 class="vTextField" maxlength="254" id="id_phone">
-                </div>
-        </div>
-
-    <div class="submit-row">
-            <input type="submit" value="Update Profile" name="_update_pilgrim_profile">
-    </div>
-    </form>
-</fieldset>
-
-{% endblock %}
 
 {% block submit_buttons_bottom %}
     {{ block.super }}
