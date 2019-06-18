@@ -59,12 +59,15 @@ class VendorDetailsView(generics.RetrieveUpdateAPIView):
 
 
 class VendorsDetails(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     serializer_class = VendorSerializer
     def post(self,request):
         vendor=Vendor.objects.select_related('account').filter(account_id=request.data['id'])
-        serializer=VendorSerializer(vendor,many=True)
-        return Response(serializer.data)
+        if vendor:
+            serializer=VendorSerializer(vendor,many=True)
+            return Response(serializer.data)
+        else:
+            raise NotFound(detail="vendor not found", code=404)
 
 
 class CategoryList(generics.ListAPIView):

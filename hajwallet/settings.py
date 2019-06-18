@@ -123,25 +123,25 @@ WSGI_APPLICATION = 'hajwallet.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.mysql',
-#
-#         'OPTIONS': {
-#             'read_default_file': os.path.join(BASE_DIR, 'env.cnf'),
-#         },
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
-        'NAME': 'hajwallet',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306'
+
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, 'env.cnf'),
+        },
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.mysql',
+#         'NAME': 'hajwallet',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306'
+#     }
+# }
 
 
 
@@ -191,16 +191,16 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-<<<<<<< HEAD
+
 # STRIPE_PUBLISHABLE_KEY= 'pk_test_lxdx4EyY8eEtFZOnIXlmWouy00Ax7tUt2c'
 # STRIPE_SECRET_KEY= 'sk_test_gxiEl53GUltvLpktiqIyeUFl00DpQmXHbL'
 # STRIPE_CONNECT_CLIENT_ID= 'ca_FGbdBSeRdviWMPfN8g5hC9vJRV28DuHy'
 
-STRIPE_PUBLISHABLE_KEY='pk_test_yQjZaj2XRqvo9biNwmRuTsBX00qQ1QdEoN'
-STRIPE_SECRET_KEY='sk_test_eAkj6GrCvcERHBHjjGdPiY5J002E5EPvhJ'
-STRIPE_CONNECT_CLIENT_ID='ca_FGbc73T2kzby8rAj4aPjAJBZu2Wfo2ah'
-=======
+# STRIPE_PUBLISHABLE_KEY='pk_test_yQjZaj2XRqvo9biNwmRuTsBX00qQ1QdEoN'
+# STRIPE_SECRET_KEY='sk_test_eAkj6GrCvcERHBHjjGdPiY5J002E5EPvhJ'
+# STRIPE_CONNECT_CLIENT_ID='ca_FGbc73T2kzby8rAj4aPjAJBZu2Wfo2ah'
+
 STRIPE_PUBLISHABLE_KEY= 'pk_test_fMnNg167rZQxzKjNJECU8G3a006lIiWlZV'
 STRIPE_SECRET_KEY= 'sk_test_dK0QWZrL5rdmp8XuDHaT1uxk00Lx8CsVTw'
 STRIPE_CONNECT_CLIENT_ID= 'ca_FAysl1qQ2HnPvhb3KPMsLZUYBYG2pi4C'
->>>>>>> 7094aff154387660e7fc8ed840aad82dd173d3a5
+

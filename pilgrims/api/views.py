@@ -71,15 +71,17 @@ class PilgrimsDetail(generics.RetrieveAPIView):
     return Response(serializer.data)
 
 class PilgrimDetails(APIView):
-  permission_classes = (IsAuthenticated,)
+  # permission_classes = (IsAuthenticated,)
   queryset = Pilgrims.objects.all()
   serializer_class = PilgrimSerializer
 
   def post(self, request):
     pilgrim = Account.objects.filter(id=request.data['id'])
-
-    serializer = PilgrimSerializer(pilgrim, many=True)
-    return Response(serializer.data)
+    if pilgrim:
+      serializer = PilgrimSerializer(pilgrim, many=True)
+      return Response(serializer.data)
+    else:
+      raise NotFound(detail="pilgrim not found", code=404)
 
 class TransactionsView(APIView):
   permission_classes = (IsAuthenticated,)
